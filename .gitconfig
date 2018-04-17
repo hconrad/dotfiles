@@ -1,0 +1,14 @@
+[user]
+	name = Hans Conrad
+[core]
+	autocrlf = input
+	editor = vim
+[alias]
+	if = update-index --assume-unchanged
+	uf = udpate-index --no-assume-unchanged
+	bt = branch --list --sort -committerdate
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
