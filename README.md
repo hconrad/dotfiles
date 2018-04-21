@@ -48,4 +48,7 @@ Common dotfiles and a general guide to set up new environments
    sudo apt-get install neovim
    ```
 
+# Oh my Zsh theme
+[Bullet Train](https://github.com/caiogondim/bullet-train.zsh)
+
 
