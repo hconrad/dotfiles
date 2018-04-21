@@ -34,7 +34,18 @@ Common dotfiles and a general guide to set up new environments
 * [Oh my Z](./scripts/install_oh_my_zsh.sh)
 * Current Theme "agnoster"
 
+# Install Neo Vim
+* Mac - [NeoVim](./scripts/install_neovim_mac.sh) 
+    ```sh
+    brew install neovim
+    ```
+* Win - [NeoVim](./scripts/install_neovim_win.sh)
+    ```sh
+    choco install neovim
+    ```
+* Nix - [NeoVim](./scripts/install_neovim_nix.sh)
+   ```sh
+   sudo apt-get install neovim
+   ```
 
-# Changelog
-* Added .vimrc file
-* Added Terminal install instructions
+
