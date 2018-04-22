@@ -46,6 +46,13 @@ Common dotfiles and a general guide to set up new environments
    ```sh
    sudo apt-get install neovim
    ```
+* Setup Vundle
+   ```sh
+   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim 
+   ln ./dotfiles/.vimrc ~/.vimrc
+   ln ./dotfiles/.vimrc ~/.config/nvim/init.vim
+   ```
+
 
 # Install [WebStorm](https://jetbrains.com)
 * Plugin Material Theme UI
