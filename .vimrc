@@ -16,12 +16,11 @@ Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'pangloss/vim-javascript'
 Plugin 'Chiel92/vim-autoformat'
-Plugin 'iCyMind/NeoSolarized'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
 set background=dark
-colorscheme NeoSolarized
+colorscheme solarized
 set termguicolors
 
 " ====================
