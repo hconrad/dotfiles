@@ -53,6 +53,20 @@ Common dotfiles and a general guide to set up new environments
    ln ./dotfiles/.vimrc ~/.config/nvim/init.vim
    ```
 
+# Install ack 
+* Mac
+   ```sh
+   brew install ack 
+   ```
+* Win 
+   ```sh
+   choco install ack 
+   ```
+* Nix
+  ```sh
+  sudo apt-get install ack-grep
+  ```
+
 
 # Install [WebStorm](https://jetbrains.com)
 * Plugin Material Theme UI
