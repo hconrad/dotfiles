@@ -3,23 +3,26 @@
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-set background=dark
-colorscheme solarized
-let g:solarized_termcolors=16
+
 " Plugins
 " =======
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'bling/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'tpope/vim-fugitive'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'scrooloose/nerdtree'
 Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'pangloss/vim-javascript'
 Plugin 'Chiel92/vim-autoformat'
+Plugin 'iCyMind/NeoSolarized'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
+set background=dark
+colorscheme NeoSolarized
+set termguicolors
 
 " ====================
 " Airline
