@@ -29,7 +29,6 @@ Common dotfiles and a general guide to set up new environments
    brew doctor
    brew install zsh
    ```
-
 # Install Oh my Zsh
 * [Oh my Z](./scripts/install_oh_my_zsh.sh)
 * Current Theme "agnoster"
@@ -47,6 +46,10 @@ Common dotfiles and a general guide to set up new environments
    ```sh
    sudo apt-get install neovim
    ```
+
+# Install [WebStorm](https://jetbrains.com)
+* Plugin Material Theme UI
+* Plugin IdeaVim
 
 # Oh my Zsh theme
 [Bullet Train](https://github.com/caiogondim/bullet-train.zsh)
