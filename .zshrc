@@ -1,11 +1,12 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:~/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:~/bin:/usr/local/go/bin:$PATH
+export GOROOT = /usr/local/go
 
-export NVM_DIR="/Users/hconrad/.nvm"
+export NVM_DIR="~/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/hconrad/.oh-my-zsh
+export ZSH=~/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
