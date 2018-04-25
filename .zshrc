@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:~/bin:/usr/local/go/bin:$PATH
-export GOROOT = /usr/local/go
+export GOROOT=/usr/local/go
 
 export NVM_DIR="~/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
