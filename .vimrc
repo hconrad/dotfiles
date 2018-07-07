@@ -1,24 +1,29 @@
 " Vim Configuration  
 " =================
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" Install Vim - Plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+
 
 " Plugins
 " =======
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'bling/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'tpope/vim-fugitive'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'scrooloose/nerdtree'
-Plugin 'git://git.wincent.com/command-t.git'
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plugin 'pangloss/vim-javascript'
-Plugin 'Chiel92/vim-autoformat'
-Plugin 'tpope/vim-surround'
-
-call vundle#end()            " required
+call plug#begin('~/.vim/plugged')
+Plug 'VundleVim/Vundle.vim'
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'altercation/vim-colors-solarized'
+Plug 'scrooloose/nerdtree'
+Plug 'git://git.wincent.com/command-t.git'
+Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plug 'pangloss/vim-javascript'
+Plug 'Chiel92/vim-autoformat'
+Plug 'tpope/vim-surround'
+call plug#end()
 filetype plugin indent on    " required
 set background=dark
 colorscheme solarized

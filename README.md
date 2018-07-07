@@ -46,13 +46,6 @@ Common dotfiles and a general guide to set up new environments
    ```sh
    sudo apt-get install neovim
    ```
-* Setup Vundle
-   ```sh
-   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim 
-   ln ./dotfiles/.vimrc ~/.vimrc
-   ln ./dotfiles/.vimrc ~/.config/nvim/init.vim
-   ```
-
 # Install ack 
 * Mac
    ```sh
@@ -74,5 +67,12 @@ Common dotfiles and a general guide to set up new environments
 
 # Oh my Zsh theme
 [Bullet Train](https://github.com/caiogondim/bullet-train.zsh)
+
+# Vim
+Once everything is installed run 
+```sh
+scripts/install_vimrc.sh
+```
+This will create a symbolic link to this .vimrc and setup vim for the next load
 
 
