@@ -23,7 +23,10 @@ Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plug 'pangloss/vim-javascript'
 Plug 'Chiel92/vim-autoformat'
 Plug 'tpope/vim-surround'
-call plug#end()
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'christoomey/vim-tmux-navigator'
+call plug#end()            " required
+
 filetype plugin indent on    " required
 set background=dark
 colorscheme solarized
@@ -52,6 +55,9 @@ augroup END
 :nmap ff :Autoformat <CR>
 :nmap gd :Gdiff <CR>
 map <C-n> :NERDTreeToggle<CR>
+nmap <C-h> <C-W>h<C-W>_
+nmap <C-l> <C-W>l<C-W>_
+
 " ==========
 " VIM General
 " ==========
