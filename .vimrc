@@ -25,13 +25,21 @@ Plug 'Chiel92/vim-autoformat'
 Plug 'tpope/vim-surround'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'w0rp/ale'
 call plug#end()            " required
 
 filetype plugin indent on    " required
-set background=dark
-colorscheme solarized
+"set background=dark
+"colorscheme solarized
 set termguicolors
 
+" ====================
+" W0rp Ale
+" ====================
+let g:ale_linters = { 
+\ 'javascript': ['eslint'], 
+\}
+let g:ale_javascript_eslint_executable = 'eslint'
 " ====================
 " Airline
 " ====================
