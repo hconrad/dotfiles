@@ -29,8 +29,8 @@ Plug 'w0rp/ale'
 call plug#end()            " required
 
 filetype plugin indent on    " required
-"set background=dark
-"colorscheme solarized
+set background=dark
+colorscheme solarized
 set termguicolors
 
 " ====================
