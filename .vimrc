@@ -31,7 +31,6 @@ call plug#end()            " required
 filetype plugin indent on    " required
 set background=dark
 colorscheme solarized
-set termguicolors
 
 " ====================
 " W0rp Ale
