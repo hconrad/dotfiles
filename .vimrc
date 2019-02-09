@@ -68,6 +68,11 @@ nmap <C-l> <C-W>l<C-W>_
 " ==========
 " VIM General
 " ==========
+"Recusrive search
+set path+=**
+set wildignore+=**/node_modules/**
+"Display all matching files when we tab complete
+set wildmenu
 set number
 set relativenumber
 set undofile
