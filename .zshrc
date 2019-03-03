@@ -2,8 +2,12 @@
 export PATH=$HOME/bin:/usr/local/bin:~/bin:/usr/local/go/bin:$PATH
 export GOROOT=/usr/local/go
 
-export NVM_DIR="~/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+export NVM_DIR=$HOME/.nvm
+if [ -s "$NVM_DIR"/nvm.sh ]; then 
+	\. "$NVM_DIR"/nvm.sh  # This loads nvm
+else
+	echo "NVM not loaded"
+fi
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
@@ -87,3 +91,4 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
