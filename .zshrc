@@ -1,12 +1,15 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:~/bin:/usr/local/go/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:~/bin:/usr/local/go/bin:/usr/local/share/dotnet:$PATH
 export GOROOT=/usr/local/go
 
-export NVM_DIR="~/.nvm"
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
+
+#Watson Auto complete
+autoload -Uz compinit && compinit
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -87,3 +90,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias git="/usr/local/bin/git"
+
+export YVM_DIR=/Users/hconrad/.yvm
+source /Users/hconrad/.yvm/yvm.sh

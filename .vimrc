@@ -26,11 +26,12 @@ Plug 'tpope/vim-surround'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
+Plug 'gabrielelana/vim-markdown'
 call plug#end()            " required
 
 filetype plugin indent on    " required
-set background=dark
-colorscheme solarized
+"set background=dark
+"colorscheme solarized
 
 " ====================
 " W0rp Ale
@@ -39,6 +40,8 @@ let g:ale_linters = {
 \ 'javascript': ['eslint'], 
 \}
 let g:ale_javascript_eslint_executable = 'eslint'
+let g:ale_sign_error = '!'
+let g:ale_sign_warning = '*'
 " ====================
 " Airline
 " ====================
@@ -73,6 +76,7 @@ set path+=**
 set wildignore+=**/node_modules/**
 "Display all matching files when we tab complete
 set wildmenu
+set hlsearch
 set number
 set relativenumber
 set undofile
