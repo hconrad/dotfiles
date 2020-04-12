@@ -26,6 +26,8 @@ Plug 'tpope/vim-surround'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
+Plug 'tpope/vim-fireplace'
+Plug 'frazrepo/vim-rainbow'
 call plug#end()            " required
 
 filetype plugin indent on    " required
