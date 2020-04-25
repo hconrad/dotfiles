@@ -16,7 +16,6 @@ Plug 'VundleVim/Vundle.vim'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
-Plug 'altercation/vim-colors-solarized'
 Plug 'scrooloose/nerdtree'
 Plug 'git://git.wincent.com/command-t.git'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -31,8 +30,6 @@ Plug 'frazrepo/vim-rainbow'
 call plug#end()            " required
 
 filetype plugin indent on    " required
-set background=dark
-colorscheme solarized
 
 " ====================
 " W0rp Ale
