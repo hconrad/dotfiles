@@ -1,5 +1,5 @@
 #/bin/sh
 
-ln -s ~/repos/dotfiles/.vimrc ~/.vimrc
-ln -s ~/repos/dotfiles/.vimrc ~/.ideavimrc
-ln -s ~/repos/dotfiles/.zshrc ~/.zshrc
+ln -s `pwd`/../.vimrc ~/.vimrc
+ln -s `pwd`/../.vimrc ~/.ideavimrc
+ln -s `pwd`/../.zshrc ~/.zshrc
