@@ -26,7 +26,10 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'tpope/vim-fireplace'
-Plug 'frazrepo/vim-rainbow'
+Plug 'guns/vim-clojure-static'
+Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'vim-scripts/paredit.vim'
+
 call plug#end()            " required
 
 filetype plugin indent on    " required
@@ -53,6 +56,7 @@ autocmd FileType html setlocal noexpandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType css setlocal noexpandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType scss setlocal noexpandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+autocmd FileType lisp,clojure,scheme RainbowParentheses
 augroup END
 
 " ============
@@ -77,7 +81,6 @@ set relativenumber
 set undofile
 set undodir=~/.vim/undodir
 set nocompatible              " be iMproved, required
-filetype off                  " required
-syntax enable  
+syntax on 
 
 	  
