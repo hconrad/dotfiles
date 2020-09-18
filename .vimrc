@@ -64,6 +64,7 @@ augroup END
 " ============
 :nmap ff :Autoformat <CR>
 :nmap gd :Gdiff <CR>
+:nmap rr :RainbowParenthesesToggle <CR>
 map <C-n> :NERDTreeToggle<CR>
 nmap <C-h> <C-W>h<C-W>_
 nmap <C-l> <C-W>l<C-W>_
