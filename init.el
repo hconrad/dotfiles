@@ -111,8 +111,6 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
-(use-package ace-window)
-
 (use-package general
   :config
   (general-create-definer rune/leader-keys
@@ -121,8 +119,24 @@
     :global-prefix "C-SPC")
 
   (rune/leader-keys
+    "SPC" '(counsel-M-x :which-key "execute")
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")))
+
+(use-package ace-window)
+(use-package winum)
+(winum-mode)
+
+(rune/leader-keys
+  "1" '(winum-select-window-1 :which-key "Select 1st Window")
+  "2" '(winum-select-window-2 :which-key "Select 2nd Window")
+  "3" '(winum-select-window-3 :which-key "Select 3rd Window")
+  "4" '(winum-select-window-3 :which-key "Select 4th Window")
+  "w" '(:ignore w :which-key "Window")
+  "w-" '(split-window-vertically :which-key "Split Window -")
+  "w|" '(split-window-horizontally :which-key "Split Window |")
+  "wd" '(delete-window :which-key "Del Window")
+  "q" '(save-buffers-kill-terminal :which-key "Quit Emacs"))
 
 (use-package evil
   :init
@@ -148,6 +162,7 @@
   (evil-collection-init))
 
 (use-package hydra)
+
 
 (defhydra hydra-text-scale (:timeout 4)
   "scale text"
@@ -187,7 +202,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
+   '(winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
