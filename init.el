@@ -94,13 +94,6 @@
   :init
   (ivy-rich-mode 1))
 
-(use-package counsel
-  :bind (("M-x" . counsel-M-x)
-         ("C-x b" . counsel-ibuffer)
-         ("C-x C-f" . counsel-find-file)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history)))
-
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -113,21 +106,34 @@
 
 (use-package general
   :config
-  (general-create-definer rune/leader-keys
+  (general-create-definer my/leader-keys
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-SPC")
 
-  (rune/leader-keys
-    "SPC" '(counsel-M-x :which-key "execute")
+  (my/leader-keys
+    "SPC" '(counsel-M-x :which-key "Execute")
     "t"  '(:ignore t :which-key "toggles")
-    "tt" '(counsel-load-theme :which-key "choose theme")))
+    "tt" '(counsel-load-theme :which-key "choose theme")
+    "f" '(:ignore t :which-key "Files")
+    "fs" '(save-buffer :which-key "Save")))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+         ("C-x b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))
+
+(my/leader-keys
+  "b" '(:ignore t :which-key "Buffer")
+  "bb" '(counsel-ibuffer :which-key "List Buffers"))
 
 (use-package ace-window)
 (use-package winum)
 (winum-mode)
 
-(rune/leader-keys
+(my/leader-keys
   "1" '(winum-select-window-1 :which-key "Select 1st Window")
   "2" '(winum-select-window-2 :which-key "Select 2nd Window")
   "3" '(winum-select-window-3 :which-key "Select 3rd Window")
@@ -170,7 +176,7 @@
   ("k" text-scale-decrease "out")
   ("f" nil "finished" :exit t))
 
-(rune/leader-keys
+(my/leader-keys
   "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 (use-package projectile
