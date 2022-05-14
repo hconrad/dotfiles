@@ -104,6 +104,27 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
+(defun move-buffer-to-window (windownum)
+  "Moves buffer to window"
+  (if (> windownum (length (window-list-1 nil nil t)))
+      (message "No window numbered %s" windownum)
+    (let ((b (current-buffer))
+	  (w1 (selected-window))
+	  (w2 (winum-get-window-by-number windownum)))
+      (unless (eq w1 w2)
+	(set-window-buffer w2 b)
+	(switch-to-prev-buffer)
+	(unrecord-window-buffer w1 b)
+	(select-window (winum-get-window-by-number windownum))))))
+
+(dotimes (i 4)
+  (let ((n (+ i 1)))
+    (eval `(defun ,(intern (format "buffer-to-window-%s" n)) (&optional arg)
+             ,(format "Move buffer to the window with number %i." n)
+             (interactive "P")
+	     (move-buffer-to-window ,n)
+             ))))
+
 (use-package general
   :config
   (general-create-definer my/leader-keys
@@ -113,7 +134,9 @@
 
   (my/leader-keys
     "SPC" '(counsel-M-x :which-key "Execute")
-    ":" '(evaluate-expression :which-key "Evaluate Expr")
+    ":" '(eval-expression :which-key "Evaluate Expr")
+    "e" '(:ignore t :which-key "Emacs")
+    "ef" '(eval-defun :which-key "Eval defun")
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
     "f" '(:ignore t :which-key "Files")
@@ -130,24 +153,29 @@
   "b" '(:ignore t :which-key "Buffer")
   "bb" '(counsel-ibuffer :which-key "List Buffers")
   "bn" '(next-buffer :which-key "Next Buffer")
-  "bp" '(previous-buffer :which-key "Previous Buffer"))
+  "bp" '(previous-buffer :which-key "Previous Buffer")
+  "b1" '(buffer-to-window-1 :which-key "Move Buffer to 1")
+  "b2" '(buffer-to-window-2 :which-key "Move Buffer to 2")
+  "b3" '(buffer-to-window-3 :which-key "Move Buffer to 3")
+  "b4" '(buffer-to-window-4 :which-key "Move Buffer to 4"))
 
 (use-package ace-window)
 (use-package winum)
 (winum-mode)
 
-(defun move-buffer-to-window (windownum)
-  "Moves buffer to window"
-  (if (> windownum (length (window-list-1 nil nil t)))
-      (message "No window numbered %s" windownum)
-    (let ((b (current-buffer))
-	  (w1 (selected-window))
-	  (w2 (winum-get-window-by-number windownum)))
-      (unless (eq w1 w2)
-	(set-window-buffer w2 b)
-	(switch-to-prev-buffer)
-	(unrecord-window-buffer w1 b)
-	(select-window (winum-get-window-by-number windownum))))))
+(defun list-windows ()
+  "Determines the list of windows to be deleted."
+  (seq-filter
+   (lambda (window)
+     (let* ((name (buffer-name (window-buffer window)))
+            (prefixes-matching
+             (seq-filter
+              (lambda (prefix) (string-prefix-p prefix name))
+              spacemacs-window-split-ignore-prefixes)))
+       (not prefixes-matching)))
+   (window-list (selected-frame))))
+
+
   
 (my/leader-keys
   "1" '(winum-select-window-1 :which-key "Select 1st Window")
