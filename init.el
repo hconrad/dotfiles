@@ -250,6 +250,11 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
+(my/leader-keys
+"g" '(:ignore t :which-key "Git")
+"gs" '(magit-status :which-key "Status")
+"o" '(projectile-add-known-project :which-key "Open Unknown Project"))
+
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
