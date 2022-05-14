@@ -113,6 +113,7 @@
 
   (my/leader-keys
     "SPC" '(counsel-M-x :which-key "Execute")
+    ":" '(evaluate-expression :which-key "Evaluate Expr")
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
     "f" '(:ignore t :which-key "Files")
@@ -127,17 +128,32 @@
 
 (my/leader-keys
   "b" '(:ignore t :which-key "Buffer")
-  "bb" '(counsel-ibuffer :which-key "List Buffers"))
+  "bb" '(counsel-ibuffer :which-key "List Buffers")
+  "bn" '(next-buffer :which-key "Next Buffer")
+  "bp" '(previous-buffer :which-key "Previous Buffer"))
 
 (use-package ace-window)
 (use-package winum)
 (winum-mode)
 
+(defun move-buffer-to-window (windownum)
+  "Moves buffer to window"
+  (if (> windownum (length (window-list-1 nil nil t)))
+      (message "No window numbered %s" windownum)
+    (let ((b (current-buffer))
+	  (w1 (selected-window))
+	  (w2 (winum-get-window-by-number windownum)))
+      (unless (eq w1 w2)
+	(set-window-buffer w2 b)
+	(switch-to-prev-buffer)
+	(unrecord-window-buffer w1 b)
+	(select-window (winum-get-window-by-number windownum))))))
+  
 (my/leader-keys
   "1" '(winum-select-window-1 :which-key "Select 1st Window")
   "2" '(winum-select-window-2 :which-key "Select 2nd Window")
   "3" '(winum-select-window-3 :which-key "Select 3rd Window")
-  "4" '(winum-select-window-3 :which-key "Select 4th Window")
+  "4" '(winum-select-window-4 :which-key "Select 4th Window")
   "w" '(:ignore w :which-key "Window")
   "w-" '(split-window-vertically :which-key "Split Window -")
   "w|" '(split-window-horizontally :which-key "Split Window |")
