@@ -241,7 +241,7 @@
 
 (my/leader-keys
 "p" '(projectile-command-map :which-key "Projects")
-"o" '(projectile-add-known-project :which-key "Open Unknown Project")
+"o" '(projectile-add-known-project :which-key "Open Unknown Project"))
 
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
