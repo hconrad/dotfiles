@@ -163,9 +163,14 @@
          :map minibuffer-local-map
          ("C-r" . 'counsel-minibuffer-history)))
 
+(defun kill-current-buffer ()
+(interactive)
+(kill-buffer (current-buffer)))
+
 (my/leader-keys
   "b" '(:ignore t :which-key "Buffer")
   "bb" '(counsel-ibuffer :which-key "List Buffers")
+  "bd" '(kill-current-buffer :which-key "Kill Buffer")
   "bn" '(next-buffer :which-key "Next Buffer")
   "bp" '(previous-buffer :which-key "Previous Buffer")
   "b1" '(buffer-to-window-1 :which-key "Move Buffer to 1")
