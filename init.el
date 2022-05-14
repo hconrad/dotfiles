@@ -117,6 +117,20 @@
 	(unrecord-window-buffer w1 b)
 	(select-window (winum-get-window-by-number windownum))))))
 
+(defun window-split-2 ()
+  (interactive)
+  (delete-other-windows)
+  (split-window-horizontally)
+  (balance-windows))
+
+(defun window-split-3 ()
+  (interactive)
+  (delete-other-windows)
+  (split-window-horizontally)
+  (split-window-horizontally)
+  (balance-windows))
+    
+
 (dotimes (i 4)
   (let ((n (+ i 1)))
     (eval `(defun ,(intern (format "buffer-to-window-%s" n)) (&optional arg)
@@ -127,7 +141,7 @@
 
 (use-package general
   :config
-  (general-create-definer my/leader-keys
+  
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-SPC")
@@ -162,20 +176,6 @@
 (use-package ace-window)
 (use-package winum)
 (winum-mode)
-
-(defun list-windows ()
-  "Determines the list of windows to be deleted."
-  (seq-filter
-   (lambda (window)
-     (let* ((name (buffer-name (window-buffer window)))
-            (prefixes-matching
-             (seq-filter
-              (lambda (prefix) (string-prefix-p prefix name))
-              spacemacs-window-split-ignore-prefixes)))
-       (not prefixes-matching)))
-   (window-list (selected-frame))))
-
-
   
 (my/leader-keys
   "1" '(winum-select-window-1 :which-key "Select 1st Window")
@@ -183,6 +183,10 @@
   "3" '(winum-select-window-3 :which-key "Select 3rd Window")
   "4" '(winum-select-window-4 :which-key "Select 4th Window")
   "w" '(:ignore w :which-key "Window")
+  "wb" '(balance-windows :which-key "Balance Windows")
+  "w1" '(delete-other-windows :which-Key "Single Column")
+  "w2" '(window-split-2 :which-key "2 Columns")
+  "w3" '(window-split-3 :which-key "3 Columns")
   "w-" '(split-window-vertically :which-key "Split Window -")
   "w|" '(split-window-horizontally :which-key "Split Window |")
   "wd" '(delete-window :which-key "Del Window")
