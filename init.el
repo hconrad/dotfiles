@@ -235,9 +235,13 @@
   ("C-c p" . projectile-command-map)
   :init
   ;; NOTE: Set this to the folder where you keep your Git repos!
-  (when (file-directory-p "~/Projects/Code")
-    (setq projectile-project-search-path '("~/Projects/Code")))
+  (when (file-directory-p "~/repos")
+    (setq projectile-project-search-path '("~/repos")))
   (setq projectile-switch-project-action #'projectile-dired))
+
+(my/leader-keys
+"p" '(projectile-command-map :which-key "Projects")
+"o" '(projectile-add-known-project :which-key "Open Unknown Project")
 
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
