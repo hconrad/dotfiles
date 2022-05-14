@@ -255,6 +255,9 @@
 "gs" '(magit-status :which-key "Status")
 "o" '(projectile-add-known-project :which-key "Open Unknown Project"))
 
+(use-package smartparens)
+(require 'smartparens-config)
+
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
