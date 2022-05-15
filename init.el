@@ -141,7 +141,7 @@
 
 (use-package general
   :config
-  
+ (general-create-definer my/leader-keys 
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-SPC")
