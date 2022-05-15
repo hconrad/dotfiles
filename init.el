@@ -79,7 +79,7 @@
   :custom ((doom-modeline-height 15)))
 
 (use-package doom-themes
-  :init (load-theme 'doom-dracula t))
+  :init (load-theme 'doom-nord t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -263,18 +263,26 @@
 
 (use-package smartparens)
 (require 'smartparens-config)
+(smartparens-global-mode)
 (my/leader-keys
   "k" '(:ignore t :which-key "Smart Parens!")
-  "ks" '(sp-raise-sexp :which-key "Raise"))
+  "kr" '(sp-raise-sexp :which-key "Raise")
+  "kw" '(sp-wrap-round :which-key "Wrap"))
+
 ;; CLOJURE
 (use-package clojure-mode)
 (use-package cider)
 (general-create-definer clojure-kb
   :states '(normal insert visual emacs)
+  :major-modes '(clojure-mode)
   :prefix ","
   :global-prefix "C-,")
+
 (clojure-kb
-  "scj" '(cider-connect-clj&cljs :which-key "Connect to REPL"))
+  "scj" '(cider-connect-clj :which-key "Connect to REPL")
+  "sjj" '(cider-jack-in-clj :which-key "Jack in CLJ"))
+
+(add-hook 'clojure-mode-hook #'smartparens-mode)
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
