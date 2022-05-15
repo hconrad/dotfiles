@@ -133,7 +133,6 @@
   (split-window-horizontally)
   (balance-windows))
     
-
 (dotimes (i 4)
   (let ((n (+ i 1)))
     (eval `(defun ,(intern (format "buffer-to-window-%s" n)) (&optional arg)
@@ -278,9 +277,16 @@
 ;; CLOJURE
 (use-package clojure-mode)
 (use-package cider)
-
+(defun cider-repl-new-line-prompt (namespace)
+  "Return a prompt string that mentions NAMESPACE."
+  (format "%s\n:) " namespace))
+(setq cider-repl-prompt-function 'cider-repl-new-line-prompt)
 
 (clojure-kb
+  "ef" '(cider-eval-defun-at-point :which-key "Eval defun")
+  "e;" '(cider-eval-defun-to-comment :which-key "Eval defun to comment")
+  "e(" '(cider-eval-list-at-point :which-key "Eval List")
+  "eb" '(cider-eval-buffer :which-key "Eval buffer")
   "scj" '(cider-connect-clj :which-key "Connect to REPL")
   "sjj" '(cider-jack-in-clj :which-key "Jack in CLJ"))
 
