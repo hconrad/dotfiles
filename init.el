@@ -10,6 +10,9 @@
 
 (menu-bar-mode -1)            ; Disable the menu bar
 
+;;Add Paths
+(setq exec-path (append exec-path '("/opt/homebrew/bin")))
+
 ;; Set up the visible be
 (setq visible-bell t)
 
@@ -145,7 +148,10 @@
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-SPC")
-
+(general-create-definer clojure-kb
+  :keymaps '(clojure-mode-map)
+  :states 'normal
+  :prefix ",")
   (my/leader-keys
     "SPC" '(counsel-M-x :which-key "Execute")
     ":" '(eval-expression :which-key "Evaluate Expr")
@@ -272,11 +278,7 @@
 ;; CLOJURE
 (use-package clojure-mode)
 (use-package cider)
-(general-create-definer clojure-kb
-  :states '(normal insert visual emacs)
-  :major-modes '(clojure-mode)
-  :prefix ","
-  :global-prefix "C-,")
+
 
 (clojure-kb
   "scj" '(cider-connect-clj :which-key "Connect to REPL")
