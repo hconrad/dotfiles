@@ -266,7 +266,15 @@
 (my/leader-keys
   "k" '(:ignore t :which-key "Smart Parens!")
   "ks" '(sp-raise-sexp :which-key "Raise"))
-
+;; CLOJURE
+(use-package clojure-mode)
+(use-package cider)
+(general-create-definer clojure-kb
+  :states '(normal insert visual emacs)
+  :prefix ","
+  :global-prefix "C-,")
+(clojure-kb
+  "scj" '(cider-connect-clj&cljs :which-key "Connect to REPL"))
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
@@ -277,7 +285,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
+   '(cider winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
