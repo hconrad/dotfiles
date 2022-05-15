@@ -151,6 +151,7 @@
     ":" '(eval-expression :which-key "Evaluate Expr")
     "e" '(:ignore t :which-key "Emacs")
     "ef" '(eval-defun :which-key "Eval defun")
+    "eb" '(eval-buffer :which-key "Eval buffer")
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
     "f" '(:ignore t :which-key "Files")
@@ -262,6 +263,9 @@
 
 (use-package smartparens)
 (require 'smartparens-config)
+(my/leader-keys
+  "k" '(:ignore t :which-key "Smart Parens!")
+  "ks" '(sp-raise-sexp :which-key "Raise"))
 
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
