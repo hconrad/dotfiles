@@ -145,6 +145,9 @@
 	     (move-buffer-to-window ,n)
              ))))
 
+(use-package org-modern)
+(global-org-modern-mode)
+
 (use-package general
   :config
  (general-create-definer my/leader-keys 
@@ -305,7 +308,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(cider winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
+   '(org-modern cider winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
