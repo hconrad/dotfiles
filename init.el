@@ -13,8 +13,11 @@
 ;;Add Paths
 (setq exec-path (append exec-path '("/opt/homebrew/bin")))
 
-;; Set up the visible be
-(setq visible-bell t)
+;; Relative line numbers
+;; (setq display-line-numbers-type 'relative)
+
+;; Set up the visible bell
+;;(setq visible-bell t)
 
 (set-face-attribute 'default nil :font "Iosevka Fixed" :height runemacs/default-font-size)
 
@@ -44,6 +47,7 @@
 
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
+		cider-repl-mode-hook
                 term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook))
