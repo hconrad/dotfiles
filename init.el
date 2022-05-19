@@ -288,13 +288,18 @@
 "gs" '(magit-status :which-key "Status")
 "o" '(projectile-add-known-project :which-key "Open Unknown Project"))
 
+(defun wrap-around-and-insert (&optional arg)
+  (interactive)
+  (sp-wrap-round)
+  (evil-insert 1))
+
 (use-package smartparens)
 (require 'smartparens-config)
 (smartparens-global-mode)
 (my/leader-keys
   "k" '(:ignore t :which-key "Smart Parens!")
   "kr" '(sp-raise-sexp :which-key "Raise")
-  "kw" '(sp-wrap-round :which-key "Wrap"))
+  "kw" '(wrap-around-and-insert :which-key "Wrap"))
 
 ;; CLOJURE
 (use-package clojure-mode)
