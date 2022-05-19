@@ -163,6 +163,7 @@
   (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
   (org-roam-db-autosync-mode))
 
+
 (use-package general
   :config
  (general-create-definer my/leader-keys 
@@ -183,6 +184,15 @@
     "tt" '(counsel-load-theme :which-key "choose theme")
     "f" '(:ignore t :which-key "Files")
     "fs" '(save-buffer :which-key "Save")))
+
+(my/leader-keys
+  "o" '(:ignore t :which-key "Org Roam")
+  "oh" '(org-roam-buffer-toggle :which-key "Buffer Toggle" )
+  "of" '(org-roam-node-find :which-key "Find")
+  "og" '(org-roam-graph :which-key "Graph")
+  "oi" '(org-roam-graph :which-key "Insert")
+  "oc" '(org-roam-capture :which-key "Capture")
+  "ot" '(org-roam-dailies-capture-today :which-key "Capture Today"))
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -274,7 +284,7 @@
 
 (my/leader-keys
 "p" '(projectile-command-map :which-key "Projects")
-"o" '(projectile-add-known-project :which-key "Open Unknown Project"))
+"a" '(projectile-add-known-project :which-key "Open Unknown Project"))
 
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
@@ -285,8 +295,7 @@
 
 (my/leader-keys
 "g" '(:ignore t :which-key "Git")
-"gs" '(magit-status :which-key "Status")
-"o" '(projectile-add-known-project :which-key "Open Unknown Project"))
+"gs" '(magit-status :which-key "Status"))
 
 (defun wrap-around-and-insert (&optional arg)
   (interactive)
