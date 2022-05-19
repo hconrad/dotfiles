@@ -298,7 +298,11 @@
 (smartparens-global-mode)
 (my/leader-keys
   "k" '(:ignore t :which-key "Smart Parens!")
+  "k$" '(sp-end-of-sexp :which-key "Jump to End")
+  "k^" '(sp-beginning-of-sexp :which-key "Jump to Beginning")
   "kr" '(sp-raise-sexp :which-key "Raise")
+  "kb" '(sp-forward-barf-sexp :which-key "Forward barf")
+  "ks" '(sp-forward-slurp-sexp :which-key "Forward slurp")
   "kw" '(wrap-around-and-insert :which-key "Wrap"))
 
 ;; CLOJURE
