@@ -318,6 +318,9 @@
   "e;" '(cider-eval-defun-to-comment :which-key "Eval defun to comment")
   "e(" '(cider-eval-list-at-point :which-key "Eval List")
   "eb" '(cider-eval-buffer :which-key "Eval buffer")
+  "gg" '(cider-find-var :which-key "Go to def")
+  "hh" '(cider-doc :which-key "Doc at point")
+  "hH" '(cider-clojuredocs :which-key "Clojure Docs at point")
   "scj" '(cider-connect-clj :which-key "Connect to REPL")
   "sjj" '(cider-jack-in-clj :which-key "Jack in CLJ"))
 
