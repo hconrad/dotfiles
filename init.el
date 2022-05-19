@@ -17,7 +17,7 @@
 ;; (setq display-line-numbers-type 'relative)
 
 ;; Set up the visible bell
-;;(setq visible-bell t)
+;(setq visible-bell t)
 
 (set-face-attribute 'default nil :font "Iosevka Fixed" :height runemacs/default-font-size)
 
@@ -183,7 +183,10 @@
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
     "f" '(:ignore t :which-key "Files")
-    "fs" '(save-buffer :which-key "Save")))
+    "fs" '(save-buffer :which-key "Save")
+    "v" '(:ignore t :which-key "View")
+    "vs" '(window-configuration-to-register :which-key "Store View")
+    "vl" '(jump-to-register :which-key "Load View")))
 
 (my/leader-keys
   "o" '(:ignore t :which-key "Org Roam")
