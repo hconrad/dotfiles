@@ -72,6 +72,8 @@
          ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
+(use-package flx)
+(setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
 
 ;; NOTE: The first time you load your configuration on a new machine, you'll
 ;; need to run the following command interactively so that mode line icons
@@ -86,7 +88,7 @@
   :custom ((doom-modeline-height 15)))
 
 (use-package doom-themes
-  :init (load-theme 'doom-nord t))
+  :init (load-theme 'doom-challenger-deep t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -171,8 +173,12 @@
     :prefix "SPC"
     :global-prefix "C-SPC")
 (general-create-definer clojure-kb
-  :keymaps '(clojure-mode-map)
   :states 'normal
+  :keymaps '(clojure-mode-map)
+  :prefix ",")
+(general-create-definer clojure-repl-kb
+  :states 'normal
+  :keymaps '(cider-repl-mode-map)
   :prefix ",")
   (my/leader-keys
     "SPC" '(counsel-M-x :which-key "Execute")
@@ -325,7 +331,44 @@
   (format "%s\n:) " namespace))
 (setq cider-repl-prompt-function 'cider-repl-new-line-prompt)
 
+(defun cider-eval-in-repl-no-focus (form)
+  "Insert FORM in the REPL buffer and eval it."
+  (while (string-match "\\`[ \t\n\r]+\\|[ \t\n\r]+\\'" form)
+    (setq form (replace-match "" t t form)))
+  (with-current-buffer (cider-current-connection)
+    (let ((pt-max (point-max)))
+      (goto-char pt-max)
+      (insert form)
+      (indent-region pt-max (point))
+      (cider-repl-return)
+      (with-selected-window (get-buffer-window (cider-current-connection))
+        (goto-char (point-max))))))
+
+(defun cider-send-function-to-repl ()
+  "Send current function to REPL and evaluate it without changing
+the focus."
+  (interactive)
+  (cider-eval-in-repl-no-focus (cider-defun-at-point)))
+
+(defun cider-send-region-to-repl (start end)
+  "Send region to REPL and evaluate it without changing
+the focus."
+  (interactive "r")
+  (cider-eval-in-repl-no-focus
+   (buffer-substring-no-properties start end)))
+(defun cider-send-ns-form-to-repl ()
+  (interactive)
+  (cidern-send-function-to-repl (cider-ns-form)))
+
+(defun cider-send-ns-form-to-repl-focus ()
+  (interactive)
+  (cider-insert-ns-form-in-repl t)
+  (evil-insert-state))
+
+(clojure-repl-kb
+ "sa" '(cider-switch-to-last-clojure-buffer :which-key "Toggle Repl"))
 (clojure-kb
+  "en" '(cider-eval-ns-form :which-key "Eval Ns")
   "ef" '(cider-eval-defun-at-point :which-key "Eval defun")
   "e;" '(cider-eval-defun-to-comment :which-key "Eval defun to comment")
   "e(" '(cider-eval-list-at-point :which-key "Eval List")
@@ -334,9 +377,16 @@
   "hh" '(cider-doc :which-key "Doc at point")
   "hH" '(cider-clojuredocs :which-key "Clojure Docs at point")
   "scj" '(cider-connect-clj :which-key "Connect to REPL")
-  "sjj" '(cider-jack-in-clj :which-key "Jack in CLJ"))
+  "sjj" '(cider-jack-in-clj :which-key "Jack in CLJ")
+  "sn" '(cider-send-ns-form-to-repl :which-key "Send NS to repl no focus")
+  "sN" '(cider-send-ns-form-to-repl-focus :which-key "Send NS to repl focus")
+  "sf" '(cider-send-function-to-repl :which-key "Send defn to repl")
+  "sr" '(cider-send-region-to-repl :which-key "Send region to repl")
+  "sa" '(cider-switch-to-repl-buffer :which-key "Toggle Repl"))
+
 
 (add-hook 'clojure-mode-hook #'smartparens-mode)
+
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
@@ -347,7 +397,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org-roam org-modern cider winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
+   '(all-the-icons flx org-roam org-modern cider winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
