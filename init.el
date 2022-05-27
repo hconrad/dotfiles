@@ -1,5 +1,5 @@
 ;; You will most likely need to adjust this font size for your system!
-(defvar runemacs/default-font-size 180)
+(defvar runemacs/default-font-size 140)
 
 (setq inhibit-startup-message t)
 
@@ -73,8 +73,9 @@
   :config
   (ivy-mode 1))
 (use-package flx)
-(setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
-
+(setq ivy-re-builders-alist
+      '((ivy-switch-buffer . ivy--regex-plus)
+        (t . ivy--regex-fuzzy)))
 ;; NOTE: The first time you load your configuration on a new machine, you'll
 ;; need to run the following command interactively so that mode line icons
 ;; display correctly:
@@ -126,18 +127,23 @@
 	(unrecord-window-buffer w1 b)
 	(select-window (winum-get-window-by-number windownum))))))
 
+(defun window-split (n)
+  (interactive)
+  (let ((win-list (window-list-1 nil nil t))
+	(win-cnt (length (window-list-1 nil nil t))))
+    (cond ((= n win-cnt) (message "Nothing to do!"))
+	  ((> n win-cnt) (progn
+			   (dotimes (w-idx (- n win-cnt)) (split-window-horizontally))
+			   (balance-windows)))
+          ((< n win-cnt) (progn (dotimes (w-idx (- win-cnt n) ) (delete-window (elt win-list w-idx) ))) (balance-windows)))))
+
 (defun window-split-2 ()
   (interactive)
-  (delete-other-windows)
-  (split-window-horizontally)
-  (balance-windows))
+  (window-split 2))
 
 (defun window-split-3 ()
   (interactive)
-  (delete-other-windows)
-  (split-window-horizontally)
-  (split-window-horizontally)
-  (balance-windows))
+  (window-split 3))
     
 (dotimes (i 4)
   (let ((n (+ i 1)))
@@ -169,9 +175,9 @@
 (use-package general
   :config
  (general-create-definer my/leader-keys 
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
+    :keymaps 'override
+    :states '(normal visual emacs)
+    :prefix "SPC" )
 (general-create-definer clojure-kb
   :states 'normal
   :keymaps '(clojure-mode-map)
@@ -182,6 +188,8 @@
   :prefix ",")
   (my/leader-keys
     "SPC" '(counsel-M-x :which-key "Execute")
+    "pt" '(projectile-dired :which-key "Dired")
+    "/" '(counsel-projectile-ag :which-key "Search Project")
     ":" '(eval-expression :which-key "Evaluate Expr")
     "e" '(:ignore t :which-key "Emacs")
     "ef" '(eval-defun :which-key "Eval defun")
@@ -202,6 +210,8 @@
   "oi" '(org-roam-graph :which-key "Insert")
   "oc" '(org-roam-capture :which-key "Capture")
   "ot" '(org-roam-dailies-capture-today :which-key "Capture Today"))
+
+
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -302,6 +312,16 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :custom ((dired-listing-switches "-agho --group-directories-first"))
+  :config
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-up-directory
+    "l" 'dired-find-file))
+
 (my/leader-keys
 "g" '(:ignore t :which-key "Git")
 "gs" '(magit-status :which-key "Status"))
@@ -324,12 +344,49 @@
   "kw" '(wrap-around-and-insert :which-key "Wrap"))
 
 ;; CLOJURE
-(use-package clojure-mode)
-(use-package cider)
+(defun clojure/fancify-symbols (mode)
+  "Pretty symbols for Clojure's anonymous functions and sets,
+   like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6}."
+  (font-lock-add-keywords mode
+                          `(("(\\(fn\\)[[[:space:]]"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "λ")
+                                       nil)))
+                            ("(\\(partial\\)[[[:space:]]"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "Ƥ")
+                                       nil)))
+                            ("(\\(comp\\)[[[:space:]]"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "∘")
+                                       nil)))
+                            ("\\(#\\)("
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "ƒ")
+                                       nil)))
+                            ("\\(#\\){"
+                             (0 (progn (compose-region (match-beginning 1)
+                                                       (match-end 1) "∈")
+                                       nil))))))
+
+(use-package clojure-mode
+  :config
+  (progn (clojure/fancify-symbols 'clojure-mode)))
+(use-package cider
+  :config
+  (progn
+    (clojure/fancify-symbols 'cider-repl-mode)
+    (clojure/fancify-symbols 'cider-clojure-interaction-mode)))
+
 (defun cider-repl-new-line-prompt (namespace)
   "Return a prompt string that mentions NAMESPACE."
   (format "%s\n:) " namespace))
 (setq cider-repl-prompt-function 'cider-repl-new-line-prompt)
+(setq clojure-toplevel-inside-comment-form t)
+;; Play with this setting 
+(add-hook 'cider-repl-mode-hook '(lambda () (setq scroll-conservatively 101)))
+;;(setq cider-invert-insert-eval-p t)                        ;; 1
+;;(setq cider-switch-to-repl-after-insert-p nil)             ;; 2
 
 (defun cider-eval-in-repl-no-focus (form)
   "Insert FORM in the REPL buffer and eval it."
@@ -367,6 +424,9 @@ the focus."
 
 (clojure-repl-kb
  "sa" '(cider-switch-to-last-clojure-buffer :which-key "Toggle Repl"))
+(general-define-key :keymaps 'cider-repl-mode-map
+		    "C-k" 'cider-repl-previous-input
+		    "C-j" 'cider-repl-next-input)
 (clojure-kb
   "en" '(cider-eval-ns-form :which-key "Eval Ns")
   "ef" '(cider-eval-defun-at-point :which-key "Eval defun")
@@ -378,18 +438,23 @@ the focus."
   "hH" '(cider-clojuredocs :which-key "Clojure Docs at point")
   "scj" '(cider-connect-clj :which-key "Connect to REPL")
   "sjj" '(cider-jack-in-clj :which-key "Jack in CLJ")
+  "sq" '(cider-quit :which-key "Quit Cider")
   "sn" '(cider-send-ns-form-to-repl :which-key "Send NS to repl no focus")
   "sN" '(cider-send-ns-form-to-repl-focus :which-key "Send NS to repl focus")
   "sf" '(cider-send-function-to-repl :which-key "Send defn to repl")
   "sr" '(cider-send-region-to-repl :which-key "Send region to repl")
-  "sa" '(cider-switch-to-repl-buffer :which-key "Toggle Repl"))
+  "sa" '(cider-switch-to-repl-buffer :which-key "Toggle Repl")
+  "tn" '(cider-test-run-ns-tests :which-key "Run Tests in Namespace")
+  "tt" '(cider-test-run-test :which-key "Run This Test")
+  "tr" '(cider-test-rerun-test :which-key "ReRun Test")
+  "tf" '(cider-test-rerun-failed-tests :which-key "ReRun Failed Test"))
 
 
 (add-hook 'clojure-mode-hook #'smartparens-mode)
-
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+
 (use-package forge)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
