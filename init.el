@@ -27,6 +27,7 @@
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+
 ;; Initialize package sources
 (require 'package)
 
@@ -65,6 +66,34 @@
 (use-package flycheck-clj-kondo :ensure t)
 
 (use-package command-log-mode)
+
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+;;  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+;;         (XXX-mode . lsp)
+;;         ;; if you want which-key integration
+;;         (lsp-mode . lsp-enable-which-key-integration))
+  :commands (lsp lsp-deferred))
+
+;; optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+;; if you are helm user
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; optional if you want which-key integration
+(use-package which-key
+    :config
+    (which-key-mode))
+
 
 (use-package ivy
   :diminish
@@ -514,7 +543,7 @@ Send Region to Repl."
  '(custom-safe-themes
    '("cbdf8c2e1b2b5c15b34ddb5063f1b21514c7169ff20e081d39cf57ffee89bc1e" "66bdbe1c7016edfa0db7efd03bb09f9ded573ed392722fb099f6ac6c6aefce32" "97db542a8a1731ef44b60bc97406c1eb7ed4528b0d7296997cbb53969df852d6" "f91395598d4cb3e2ae6a2db8527ceb83fed79dbaf007f435de3e91e5bda485fb" "5784d048e5a985627520beb8a101561b502a191b52fa401139f4dd20acb07607" default))
  '(package-selected-packages
-   '(eglot prettier vue-mode lsp-ui markdownfmt treemacs-magit treemacs-projectile treemacs-evil treemacs exec-path-from-shell lsp-mode all-the-icons flx org-roam org-modern cider winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
+   '(vterm dap-mode lsp-treemacs lsp-ivy helm-lsp web-mode vertico eglot prettier vue-mode lsp-ui markdownfmt treemacs-magit treemacs-projectile treemacs-evil treemacs exec-path-from-shell lsp-mode all-the-icons flx org-roam org-modern cider winum ace-window forge evil-magit magit counsel-projectile projectile which-key use-package rainbow-delimiters ivy-rich hydra helpful general evil-collection doom-themes doom-modeline counsel command-log-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
