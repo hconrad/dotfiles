@@ -1,4 +1,6 @@
-;; You will most likely need to adjust this font size for your system!
+;;; Commentary: N/A
+
+;;; Code:
 (defvar runemacs/default-font-size 140)
 
 (setq inhibit-startup-message t)
@@ -9,6 +11,7 @@
 (set-fringe-mode 10)        ; Give some breathing room
 
 (menu-bar-mode -1)            ; Disable the menu bar
+(show-paren-mode)
 
 ;;Add Paths
 (setq exec-path (append exec-path '("/opt/homebrew/bin")))
@@ -45,13 +48,20 @@
 (column-number-mode)
 (global-display-line-numbers-mode t)
 
+(use-package vterm)
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
 		cider-repl-mode-hook
                 term-mode-hook
+		vterm-mode-hook
                 shell-mode-hook
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+
+(use-package flycheck)
+(global-flycheck-mode)
+(use-package flycheck-clj-kondo :ensure t)
 
 (use-package command-log-mode)
 
@@ -74,8 +84,7 @@
   (ivy-mode 1))
 (use-package flx)
 (setq ivy-re-builders-alist
-      '((ivy-switch-buffer . ivy--regex-plus)
-        (t . ivy--regex-fuzzy)))
+      '((t . ivy--regex-plus)))
 ;; NOTE: The first time you load your configuration on a new machine, you'll
 ;; need to run the following command interactively so that mode line icons
 ;; display correctly:
@@ -171,6 +180,9 @@
   (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
   (org-roam-db-autosync-mode))
 
+(defun open-terminal ()
+  (interactive)
+  (vterm))
 
 (use-package general
   :config
@@ -180,7 +192,7 @@
     :prefix "SPC" )
 (general-create-definer clojure-kb
   :states 'normal
-  :keymaps '(clojure-mode-map)
+  :keymaps '(clojure-mode-map cider-repl-mode-map)
   :prefix ",")
 (general-create-definer clojure-repl-kb
   :states 'normal
@@ -191,6 +203,7 @@
     "pt" '(projectile-dired :which-key "Dired")
     "/" '(counsel-projectile-ag :which-key "Search Project")
     ":" '(eval-expression :which-key "Evaluate Expr")
+    ";" '(open-terminal :which-key "Terminal")
     "e" '(:ignore t :which-key "Emacs")
     "ef" '(eval-defun :which-key "Eval defun")
     "eb" '(eval-buffer :which-key "Eval buffer")
@@ -224,16 +237,18 @@
 (interactive)
 (kill-buffer (current-buffer)))
 
+
 (my/leader-keys
-  "b" '(:ignore t :which-key "Buffer")
-  "bb" '(counsel-ibuffer :which-key "List Buffers")
-  "bd" '(kill-current-buffer :which-key "Kill Buffer")
-  "bn" '(next-buffer :which-key "Next Buffer")
-  "bp" '(previous-buffer :which-key "Previous Buffer")
-  "b1" '(buffer-to-window-1 :which-key "Move Buffer to 1")
-  "b2" '(buffer-to-window-2 :which-key "Move Buffer to 2")
-  "b3" '(buffer-to-window-3 :which-key "Move Buffer to 3")
-  "b4" '(buffer-to-window-4 :which-key "Move Buffer to 4"))
+  "b" '(:ignore t :which-key "buffer")
+  "br" '(rename-buffer :which-key "rename")
+  "bb" '(counsel-ibuffer :which-key "list")
+  "bd" '(kill-current-buffer :which-key "kill")
+  "bn" '(next-buffer :which-key "next")
+  "bp" '(previous-buffer :which-key "previous")
+  "b1" '(buffer-to-window-1 :which-key "move -> 1")
+  "b2" '(buffer-to-window-2 :which-key "move -> 2")
+  "b3" '(buffer-to-window-3 :which-key "move -> 3")
+  "b4" '(buffer-to-window-4 :which-key "move -> 4"))
 
 (use-package ace-window)
 (use-package winum)
@@ -297,8 +312,8 @@
   ("C-c p" . projectile-command-map)
   :init
   ;; NOTE: Set this to the folder where you keep your Git repos!
-  (when (file-directory-p "~/repos")
-    (setq projectile-project-search-path '("~/repos")))
+  (when (file-directory-p "~/repos/crossbeam")
+    (setq projectile-project-search-path '("~/repos/crossbeam")))
   (setq projectile-switch-project-action #'projectile-dired))
 
 (my/leader-keys
@@ -346,7 +361,7 @@
 ;; CLOJURE
 (defun clojure/fancify-symbols (mode)
   "Pretty symbols for Clojure's anonymous functions and sets,
-   like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6}."
+  like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6}."
   (font-lock-add-keywords mode
                           `(("(\\(fn\\)[[[:space:]]"
                              (0 (progn (compose-region (match-beginning 1)
@@ -371,7 +386,9 @@
 
 (use-package clojure-mode
   :config
-  (progn (clojure/fancify-symbols 'clojure-mode)))
+  (progn (clojure/fancify-symbols 'clojure-mode)
+	 (require 'flycheck-clj-kondo)))
+
 (use-package cider
   :config
   (progn
@@ -384,9 +401,11 @@
 (setq cider-repl-prompt-function 'cider-repl-new-line-prompt)
 (setq clojure-toplevel-inside-comment-form t)
 ;; Play with this setting 
-(add-hook 'cider-repl-mode-hook '(lambda () (setq scroll-conservatively 101)))
+;;(add-hook 'cider-repl-mode-hook '(lambda () (setq scroll-conservatively 101)))
 ;;(setq cider-invert-insert-eval-p t)                        ;; 1
 ;;(setq cider-switch-to-repl-after-insert-p nil)             ;; 2
+(use-package company)
+(global-company-mode)
 
 (defun cider-eval-in-repl-no-focus (form)
   "Insert FORM in the REPL buffer and eval it."
@@ -402,17 +421,18 @@
         (goto-char (point-max))))))
 
 (defun cider-send-function-to-repl ()
-  "Send current function to REPL and evaluate it without changing
-the focus."
+  "Send current function to REPL and evaluate it without changing the focus."
   (interactive)
   (cider-eval-in-repl-no-focus (cider-defun-at-point)))
 
 (defun cider-send-region-to-repl (start end)
-  "Send region to REPL and evaluate it without changing
-the focus."
+  "START Capture Region.
+END End Region.
+Send Region to Repl." 
   (interactive "r")
   (cider-eval-in-repl-no-focus
    (buffer-substring-no-properties start end)))
+
 (defun cider-send-ns-form-to-repl ()
   (interactive)
   (cidern-send-function-to-repl (cider-ns-form)))
@@ -423,39 +443,145 @@ the focus."
   (evil-insert-state))
 
 (clojure-repl-kb
- "sa" '(cider-switch-to-last-clojure-buffer :which-key "Toggle Repl"))
+ "sa" '(cider-switch-to-last-clojure-buffer :which-key "toggle repl"))
 (general-define-key :keymaps 'cider-repl-mode-map
 		    "C-k" 'cider-repl-previous-input
 		    "C-j" 'cider-repl-next-input)
 (clojure-kb
-  "en" '(cider-eval-ns-form :which-key "Eval Ns")
-  "ef" '(cider-eval-defun-at-point :which-key "Eval defun")
-  "e;" '(cider-eval-defun-to-comment :which-key "Eval defun to comment")
-  "e(" '(cider-eval-list-at-point :which-key "Eval List")
-  "eb" '(cider-eval-buffer :which-key "Eval buffer")
-  "gg" '(cider-find-var :which-key "Go to def")
-  "hh" '(cider-doc :which-key "Doc at point")
-  "hH" '(cider-clojuredocs :which-key "Clojure Docs at point")
-  "scj" '(cider-connect-clj :which-key "Connect to REPL")
-  "sjj" '(cider-jack-in-clj :which-key "Jack in CLJ")
-  "sq" '(cider-quit :which-key "Quit Cider")
-  "sn" '(cider-send-ns-form-to-repl :which-key "Send NS to repl no focus")
-  "sN" '(cider-send-ns-form-to-repl-focus :which-key "Send NS to repl focus")
-  "sf" '(cider-send-function-to-repl :which-key "Send defn to repl")
-  "sr" '(cider-send-region-to-repl :which-key "Send region to repl")
-  "sa" '(cider-switch-to-repl-buffer :which-key "Toggle Repl")
-  "tn" '(cider-test-run-ns-tests :which-key "Run Tests in Namespace")
-  "tt" '(cider-test-run-test :which-key "Run This Test")
-  "tr" '(cider-test-rerun-test :which-key "ReRun Test")
-  "tf" '(cider-test-rerun-failed-tests :which-key "ReRun Failed Test"))
+  "bc" '(cider-repl-clear-buffer :which-key "clear")
+  "e" '(:ignore t :which-key "eval")
+  "en" '(cider-eval-ns-form :which-key "eval Ns")
+  "ef" '(cider-eval-defun-at-point :which-key "eval defun")
+  "e;" '(cider-eval-defun-to-comment :which-key "eval defun to comment")
+  "e(" '(cider-eval-list-at-point :which-key "eval list")
+  "eb" '(cider-eval-buffer :which-key "eval buffer")
+  "gg" '(cider-find-var :which-key "go to def")
+  "hh" '(cider-doc :which-key "doc at point")
+  "hH" '(cider-clojuredocs :which-key "clojure docs at point")
+  "s" '(:ignore t :which-key "send")
+  "scj" '(cider-connect-clj :which-key "connect")
+  "sjj" '(cider-jack-in-clj :which-key "jack in CLJ")
+  "sq" '(cider-quit :which-key "quit")
+  "sn" '(cider-send-ns-form-to-repl :which-key "ns no focus")
+  "sN" '(cider-send-ns-form-to-repl-focus :which-key "ns focus")
+  "sf" '(cider-send-function-to-repl :which-key "defn")
+  "sr" '(cider-send-region-to-repl :which-key "region")
+  "sa" '(cider-switch-to-repl-buffer :which-key "toggle")
+  "tn" '(cider-test-run-ns-tests :which-key "namespace")
+  "tt" '(cider-test-run-test :which-key "single")
+  "tr" '(cider-test-rerun-test :which-key "rerun")
+  "tf" '(cider-test-rerun-failed-tests :which-key "rerun failed"))
 
 
 (add-hook 'clojure-mode-hook #'smartparens-mode)
-;; NOTE: Make sure to configure a GitHub token before using this package!
-;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
-;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+;;Zprint
+(load-file "/home/hans/repos/zprint.el/zprint.el")
+(add-hook 'clojure-mode-hook #'zprint-mode)
+;;TREEMACS
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay        0.5
+          treemacs-directory-name-transformer      #'identity
+          treemacs-display-in-side-window          t
+          treemacs-eldoc-display                   'simple
+          treemacs-file-event-delay                5000
+          treemacs-file-extension-regex            treemacs-last-period-regex-value
+          treemacs-file-follow-delay               0.2
+          treemacs-file-name-transformer           #'identity
+          treemacs-follow-after-init               t
+          treemacs-expand-after-init               t
+          treemacs-find-workspace-method           'find-for-file-or-pick-first
+          treemacs-git-command-pipe                ""
+          treemacs-goto-tag-strategy               'refetch-index
+          treemacs-header-scroll-indicators        '(nil . "^^^^^^")'
+          treemacs-hide-dot-git-directory          t
+          treemacs-indentation                     2
+          treemacs-indentation-string              " "
+          treemacs-is-never-other-window           nil
+          treemacs-max-git-entries                 5000
+          treemacs-missing-project-action          'ask
+          treemacs-move-forward-on-expand          nil
+          treemacs-no-png-images                   nil
+          treemacs-no-delete-other-windows         t
+          treemacs-project-follow-cleanup          nil
+          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                        'left
+          treemacs-read-string-input               'from-child-frame
+          treemacs-recenter-distance               0.1
+          treemacs-recenter-after-file-follow      nil
+          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-project-jump     'always
+          treemacs-recenter-after-project-expand   'on-distance
+          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+          treemacs-show-cursor                     nil
+          treemacs-show-hidden-files               t
+          treemacs-silent-filewatch                nil
+          treemacs-silent-refresh                  nil
+          treemacs-sorting                         'alphabetic-asc
+          treemacs-select-when-already-in-treemacs 'move-back
+          treemacs-space-between-root-nodes        t
+          treemacs-tag-follow-cleanup              t
+          treemacs-tag-follow-delay                1.5
+          treemacs-text-scale                      nil
+          treemacs-user-mode-line-format           nil
+          treemacs-user-header-line-format         nil
+          treemacs-wide-toggle-width               70
+          treemacs-width                           35
+          treemacs-width-increment                 1
+          treemacs-width-is-initially-locked       t
+          treemacs-workspace-switch-cleanup        nil)
 
-(use-package forge)
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+    (when treemacs-python-executable
+      (treemacs-git-commit-diff-mode t))
+
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (treemacs-hide-gitignored-files-mode nil))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-evil
+  :after (treemacs evil)
+  :ensure t)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :hook (dired-mode . treemacs-icons-dired-enable-once)
+  :ensure t)
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+;;END Treemacs
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
