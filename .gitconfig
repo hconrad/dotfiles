@@ -5,7 +5,7 @@
 	editor = vim
 [alias]
 	if = update-index --assume-unchanged
-	uf = udpate-index --no-assume-unchanged
+	uf = update-index --no-assume-unchanged
 	bt = branch --list --sort -committerdate
 [filter "lfs"]
 	smudge = git-lfs smudge -- %f
