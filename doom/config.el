@@ -113,8 +113,6 @@
                              (0 (progn (compose-region (match-beginning 1)
                                                        (match-end 1) "∈")
                                        nil))))))
-(cider-insert-in-repl)
-(defun eftest-test () (interactive) (cider-interactive-eval "(str \"HELLO\" 1 1)" (cider-eval-print-handler) nil (cider--nrepl-pr-request-map)))
 
 (after! clojure-mode
 (progn (clojure/fancify-symbols 'clojure-mode)))
