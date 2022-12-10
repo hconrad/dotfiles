@@ -35,7 +35,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; previous was doom-challenger-deep
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-dracula)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -44,6 +44,10 @@
 (after! vterm
   (set-popup-rule! "*doom:vterm-popup:*" :size 0.5 :vslot -4 :select t :quit nil :ttl 0 :side 'right)
 )
+
+(after! exec-path-from-shell
+  (when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize)))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -59,6 +63,7 @@
   (smartparens-global-mode)
   (map! :leader
         (:prefix ("k" . "parens")
+         :desc "move param right" "l" #'sp-transpose-sexp
          :desc "jump to end" "$" #'sp-end-of-sexp
          :desc "jump to beginning" "^" #'sp-beginning-of-sexp
          :desc "raise" "r" #'sp-raise-sexp
@@ -79,6 +84,8 @@
                  :desc "capture" "c" #'org-roam-capture
                  :desc "capture today" "t" #'org-roam-dailies-capture-today
                  :desc "capture manana" "m" #'org-roam-dailies-capture-tomorrow))
+
+
 
 ;;CLOJURE
 ;;
@@ -106,23 +113,36 @@
                              (0 (progn (compose-region (match-beginning 1)
                                                        (match-end 1) "∈")
                                        nil))))))
+(cider-insert-in-repl)
+(defun eftest-test () (interactive) (cider-interactive-eval "(str \"HELLO\" 1 1)" (cider-eval-print-handler) nil (cider--nrepl-pr-request-map)))
 
 (after! clojure-mode
-  (progn (clojure/fancify-symbols 'clojure-mode)
-  (require 'flycheck-clj-kondo)))
+(progn (clojure/fancify-symbols 'clojure-mode)))
 
-(after! cider
-(set-popup-rules!
-   '(("^\\*cider-repl" :ignore t)))
+(defun clerk-show ()
+  (interactive)
+  (when-let
+      ((filename
+        (buffer-file-name)))
+    (save-buffer)
+    (cider-interactive-eval
+     (concat "(nextjournal.clerk/show! \"" filename "\")"))))
+
+
+(after! clojure-mode
   (progn
     (clojure/fancify-symbols 'cider-repl-mode)
     (clojure/fancify-symbols 'cider-clojure-interaction-mode))
   (map! :map cider-repl-mode-map "C-k" #'cider-repl-previous-input "C-j" #'cider-repl-next-input)
   (map! :map cider-repl-mode-map :localleader (:prefix "r" :desc "last clojure buffer" "b" #'cider-switch-to-last-clojure-buffer))
   (map! :map clojure-mode-map :localleader (:prefix "e"
+                                            :desc "show clerk" "s" #'clerk-show
+                                            :desc "eval ns" "n" #'cider-eval-ns-form
                                             :desc "eval func" "f" #'cider-eval-defun-at-point
                                             :desc "eval list" "(" #'cider-eval-list-at-point
                                             :desc "eval defun to comment" ";" #'cider-eval-defun-to-comment)))
+
+(set-popup-rule! "*cider-repl *" :ignore t :side 'right)
 
 (defun cider-repl-new-line-prompt (namespace)
   "Return a prompt string that mentions NAMESPACE."
