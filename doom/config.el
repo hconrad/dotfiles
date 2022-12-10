@@ -114,9 +114,6 @@
                                                        (match-end 1) "∈")
                                        nil))))))
 
-(after! clojure-mode
-(progn (clojure/fancify-symbols 'clojure-mode)))
-
 (defun clerk-show ()
   (interactive)
   (when-let
@@ -126,11 +123,38 @@
     (cider-interactive-eval
      (concat "(nextjournal.clerk/show! \"" filename "\")"))))
 
+(defun cider-eval-in-repl-no-focus (form)
+  "Insert FORM in the REPL buffer and eval it."
+  (while (string-match "\\`[ \t\n\r]+\\|[ \t\n\r]+\\'" form)
+    (setq form (replace-match "" t t form)))
+  (with-current-buffer (cider-current-connection)
+    (let ((pt-max (point-max)))
+      (goto-char pt-max)
+      (insert form)
+      (indent-region pt-max (point))
+      (cider-repl-return)
+      (with-selected-window (get-buffer-window (cider-current-connection))
+        (goto-char (point-max)))
+      )))
+
+(defun cider-send-function-to-repl ()
+  "Send current function to REPL and evaluate it without changing
+the focus."
+  (interactive)
+  (cider-eval-in-repl-no-focus (cider-defun-at-point)))
+
+(defun cider-send-region-to-repl (start end)
+  "Send region to REPL and evaluate it without changing
+the focus."
+  (interactive "r")
+  (cider-eval-in-repl-no-focus
+   (buffer-substring-no-properties start end)))
 
 (after! clojure-mode
   (progn
     (clojure/fancify-symbols 'cider-repl-mode)
-    (clojure/fancify-symbols 'cider-clojure-interaction-mode))
+    (clojure/fancify-symbols 'cider-clojure-interaction-mode)
+    (set-popup-rule! "*cider-repl*" :ignore t))
   (map! :map cider-repl-mode-map "C-k" #'cider-repl-previous-input "C-j" #'cider-repl-next-input)
   (map! :map cider-repl-mode-map :localleader (:prefix "r" :desc "last clojure buffer" "b" #'cider-switch-to-last-clojure-buffer))
   (map! :map clojure-mode-map :localleader (:prefix "e"
@@ -138,9 +162,10 @@
                                             :desc "eval ns" "n" #'cider-eval-ns-form
                                             :desc "eval func" "f" #'cider-eval-defun-at-point
                                             :desc "eval list" "(" #'cider-eval-list-at-point
-                                            :desc "eval defun to comment" ";" #'cider-eval-defun-to-comment)))
-
-(set-popup-rule! "*cider-repl *" :ignore t :side 'right)
+                                            :desc "eval defun to comment" ";" #'cider-eval-defun-to-comment))
+   (map! :map clojure-mode-map :localleader (:prefix "r"
+                                             :desc "send func to repl" "f" #'cider-send-function-to-repl
+                                             :desc "send region to repl" "r" #'cider-send-region-to-repl)))
 
 (defun cider-repl-new-line-prompt (namespace)
   "Return a prompt string that mentions NAMESPACE."
