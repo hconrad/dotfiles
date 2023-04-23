@@ -43,12 +43,42 @@
 
 (after! vterm
   (set-popup-rule! "*doom:vterm-popup:*" :size 0.5 :vslot -4 :select t :quit nil :ttl 0 :side 'right)
+  (evil-set-initial-state 'vterm-mode 'insert)
+  (add-hook 'vter-mode-hook 'evil-insert-state)
 )
 
+(after! company
+  (setq company-idle-delay 1.0))
 (after! exec-path-from-shell
   (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
 
+(defun move-buffer-to-window (windownum)
+  "Moves buffer to window"
+  (if (> windownum (length (window-list-1 nil nil t)))
+      (message "No window numbered %s" windownum)
+    (let ((b (current-buffer))
+	  (w1 (selected-window))
+	  (w2 (winum-get-window-by-number windownum)))
+      (unless (eq w1 w2)
+	(set-window-buffer w2 b)
+	(switch-to-prev-buffer)
+	(unrecord-window-buffer w1 b)
+	(select-window (winum-get-window-by-number windownum))))))
+
+(dotimes (i 4)
+  (let ((n (+ i 1)))
+    (eval `(defun ,(intern (format "buffer-to-window-%s" n)) (&optional arg)
+             ,(format "Move buffer to the window with number %i." n)
+             (interactive "P")
+	     (move-buffer-to-window ,n)
+             ))))
+
+(map! :leader (:prefix "b"
+               :desc "To Win 1" "1" #'buffer-to-window-1
+               :desc "To Win 2" "2" #'buffer-to-window-2
+               :desc "To Win 3" "3" #'buffer-to-window-3
+               :desc "To Win 4" "4" #'buffer-to-window-4))
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
@@ -71,7 +101,14 @@
          :desc "forward slurp" "s" #'sp-forward-slurp-sexp
          :desc "wrap" "w" #'wrap-around-and-insert)))
 
-(map! :leader :desc "Exec" "SPC" #'execute-extended-command)
+(map! :leader :desc "Exec" "SPC" #'execute-extended-command
+      :desc "Server Edit" "d" #'server-edit
+      :desc "Win 1" "1" #'winum-select-window-1
+      :desc "Win 2" "2" #'winum-select-window-2
+      :desc "Win 3" "3" #'winum-select-window-3
+      :desc "Win 4" "4" #'winum-select-window-4)
+
+
 
 (map! :leader (:prefix "s" :desc "find references" "r" #'lsp-find-references))
 
@@ -85,10 +122,21 @@
                  :desc "capture today" "t" #'org-roam-dailies-capture-today
                  :desc "capture manana" "m" #'org-roam-dailies-capture-tomorrow))
 
+;; JS
+(after! web-mode
+  (map! :map web-mode-map "C-k" #'cider-repl-previous-input "C-j" #'cider-repl-next-input)
+  (map! :map web-mode-map :localleader (:prefix "g"
+                                            :desc "go to definition" "g" #'lsp-find-definition
+                                            :desc "find references" "r" #'lsp-find-references)))
 
+;; SQL Config
+(add-hook 'sql-mode-hook
+          (lambda ()
+            (add-hook 'after-save-hook 'server-edit nil t)))
 
 ;;CLOJURE
 ;;
+(setq cider-show-error-buffer nil)
 (defun clojure/fancify-symbols (mode)
   "Pretty symbols for Clojure's anonymous functions and sets,
   like (λ [a] (+ a 5)), ƒ(+ % 5), and ∈{2 4 6}."
@@ -151,21 +199,31 @@ the focus."
    (buffer-substring-no-properties start end)))
 
 (after! clojure-mode
+(after! cider
   (progn
+    (set-popup-rule! "*cider-repl*" :ignore t)
+    (setq cider-repl-display-in-current-window nil)
     (clojure/fancify-symbols 'cider-repl-mode)
-    (clojure/fancify-symbols 'cider-clojure-interaction-mode)
-    (set-popup-rule! "*cider-repl*" :ignore t))
+               (clojure/fancify-symbols 'cider-clojure-interaction-mode)))
+
+(after! clojure-mode
   (map! :map cider-repl-mode-map "C-k" #'cider-repl-previous-input "C-j" #'cider-repl-next-input)
   (map! :map cider-repl-mode-map :localleader (:prefix "r" :desc "last clojure buffer" "b" #'cider-switch-to-last-clojure-buffer))
+  (map! :map cider-repl-mode-map :localleader (:prefix "h"
+                                               :desc "Describe func" "d" #'cider-doc
+                                               :desc "Descirbe ClojureDoc" "c" #'cider-docview-clojuredocsd))
   (map! :map clojure-mode-map :localleader (:prefix "e"
                                             :desc "show clerk" "s" #'clerk-show
                                             :desc "eval ns" "n" #'cider-eval-ns-form
                                             :desc "eval func" "f" #'cider-eval-defun-at-point
                                             :desc "eval list" "(" #'cider-eval-list-at-point
                                             :desc "eval defun to comment" ";" #'cider-eval-defun-to-comment))
+(map! :map clojure-mode-map :localleader (:prefix "g"
+                                            :desc "find references" "r" #'lsp-find-references))
    (map! :map clojure-mode-map :localleader (:prefix "r"
                                              :desc "send func to repl" "f" #'cider-send-function-to-repl
                                              :desc "send region to repl" "r" #'cider-send-region-to-repl)))
+(setq lsp-enable-file-watchers nil)
 
 (defun cider-repl-new-line-prompt (namespace)
   "Return a prompt string that mentions NAMESPACE."
