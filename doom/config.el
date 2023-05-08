@@ -49,9 +49,20 @@
 
 (after! company
   (setq company-idle-delay 1.0))
+
+(use-package flycheck-posframe
+  :ensure t
+  :after flycheck
+  :config (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
+  :custom-face (flycheck-posframe-error-face ((t (:background "DarkSlateBlue"))))
+  :custom-face (flycheck-posframe-warning-face ((t (:background "DarkSlateBlue"))))
+  :custom-face (flycheck-posframe-border-face ((t (:background "DarkBlue")))))
+
+(set-face-attribute 'flycheck-posframe-border-width 5)
 (after! exec-path-from-shell
   (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
+t
 
 (defun move-buffer-to-window (windownum)
   "Moves buffer to window"
@@ -79,6 +90,7 @@
                :desc "To Win 2" "2" #'buffer-to-window-2
                :desc "To Win 3" "3" #'buffer-to-window-3
                :desc "To Win 4" "4" #'buffer-to-window-4))
+
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
@@ -133,8 +145,20 @@
 (add-hook 'sql-mode-hook
           (lambda ()
             (add-hook 'after-save-hook 'server-edit nil t)))
-
+(setq sqlformat-command 'sqlformat)
 ;;CLOJURE
+;;
+;; CROSSBEAM CLOJURE
+(defun clean-ns ()
+  (interactive)
+  (cider-interactive-eval "(user/clean-ns)")
+  (message "Namespace Cleaned"))
+
+
+(after! clojure-mode
+  (map! :map clojure-mode-map :localleader (:prefix "e"
+                                            :desc "clean ns" "c" #'clean-ns)))
+
 ;;
 (setq cider-show-error-buffer nil)
 (defun clojure/fancify-symbols (mode)
@@ -185,6 +209,9 @@
         (goto-char (point-max)))
       )))
 
+(defun cider-quit-when-disconnect () "Disconnect CIDER When we're disconnected" (cider-quit) )
+
+
 (defun cider-send-function-to-repl ()
   "Send current function to REPL and evaluate it without changing
 the focus."
@@ -199,12 +226,35 @@ the focus."
    (buffer-substring-no-properties start end)))
 
 (after! clojure-mode
+        (progn (clojure/fancify-symbols 'clojure-mode)
+               (require 'flycheck-clj-kondo)))
+
 (after! cider
   (progn
     (set-popup-rule! "*cider-repl*" :ignore t)
     (setq cider-repl-display-in-current-window nil)
     (clojure/fancify-symbols 'cider-repl-mode)
-               (clojure/fancify-symbols 'cider-clojure-interaction-mode)))
+               (clojure/fancify-symbols 'cider-clojure-interaction-mode)
+  ;; Quit Cider when disconnected
+  (add-hook 'cider-disconnected-hook #'cider-quit-when-disconnected)
+  ;; include cider buffer into current workspace
+  (add-hook 'cider-repl-mode-hook
+            (lambda ()
+              (persp-add-buffer (current-buffer))))
+
+  ;; include test-report buffer into current workspace
+  (add-hook 'cider-test-report-mode-hook
+            (lambda ()
+              (persp-add-buffer (current-buffer))))
+
+  ;; include temp buffers created by cider into current workspace
+  (add-hook 'cider-popup-buffer-mode-hook
+            (lambda ()
+              (persp-add-buffer (current-buffer))))
+
+               ))
+
+
 
 (after! clojure-mode
   (map! :map cider-repl-mode-map "C-k" #'cider-repl-previous-input "C-j" #'cider-repl-next-input)
@@ -224,6 +274,7 @@ the focus."
                                              :desc "send func to repl" "f" #'cider-send-function-to-repl
                                              :desc "send region to repl" "r" #'cider-send-region-to-repl)))
 (setq lsp-enable-file-watchers nil)
+(setq cider-save-file-on-load t)
 
 (defun cider-repl-new-line-prompt (namespace)
   "Return a prompt string that mentions NAMESPACE."
