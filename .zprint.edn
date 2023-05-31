@@ -1,0 +1,30 @@
+{:style [:how-to-ns :community]
+ :map {:comma? false :sort? false}
+ :vector {:wrap-after-multi? false}
+ :fn-map {"with-dynamic-redefs" "with-redefs"
+          "with-db-connection" :arg1
+          "with-db-transaction" :arg1
+          "with-query-timeout" :arg1
+          "without-autocommit" :arg1
+          "with-async-commit" :arg1
+          "with-spy" :arg1-body
+          "defn-partial" :arg1-body
+          "defn-traced" :arg1-body
+          "defjob" :arg1-body
+          "defroutes" :arg1
+          "deftest-with-ff" :arg2
+          "ANY" :arg2
+          "GET" :arg2
+          "POST" :arg2
+          "PATCH" :arg2
+          "PUT" :arg2
+          "DELETE" :arg2
+          "with-extra-tags" :arg1
+          "with-extra-tags+logging" :arg1
+          "with-delete-tracking" :arg1
+          "with-validation" :arg2
+          "with-checkpoint" :arg2
+          "with-system!" :arg1
+          "catch*" :arg1
+          "schema" [:none {:style :respect-nl}]
+          "=>" [:none {:style :respect-nl}]}}
