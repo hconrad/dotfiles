@@ -125,7 +125,9 @@ t
 (map! :leader (:prefix "s" :desc "find references" "r" #'lsp-find-references))
 
 (after! org
-  (setq org-roam-directory "/home/hans/org"))
+  (setq org-roam-directory "~/org")
+  (setq org-roam-dailies-directory ".")
+  (setq org-agenda-files (list "~/org")))
 
 (map! :leader (:prefix ("r" . "org-roam")
                  :desc "toggle buffer" "h" #'org-roam-buffer-toggle
