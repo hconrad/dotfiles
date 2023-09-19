@@ -94,6 +94,7 @@
              ))))
 
 (map! :leader (:prefix "b"
+               :desc "Kill Matching Buffers" "a" #'doom/kill-matching-buffers
                :desc "To Win 1" "1" #'buffer-to-window-1
                :desc "To Win 2" "2" #'buffer-to-window-2
                :desc "To Win 3" "3" #'buffer-to-window-3
@@ -141,8 +142,8 @@
                  :desc "toggle buffer" "h" #'org-roam-buffer-toggle
                  :desc "find" "f" #'org-roam-node-find
                  :desc "capture" "c" #'org-roam-capture
-                 :desc "capture today" "t" #'org-roam-dailies-capture-today
-                 :desc "capture manana" "m" #'org-roam-dailies-capture-tomorrow))
+                 :desc "capture today" "t" #'org-roam-dailies-goto-today
+                 :desc "capture manana" "m" #'org-roam-dailies-goto-tomorrow))
 
 ;; JS
 (after! web-mode
