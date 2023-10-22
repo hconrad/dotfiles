@@ -44,7 +44,7 @@
 (after! vterm
   (set-popup-rule! "*doom:vterm-popup:*" :size 0.5 :vslot -4 :select t :quit nil :ttl 0 :side 'right)
   (evil-set-initial-state 'vterm-mode 'insert)
-  (add-hook 'vter-mode-hook 'evil-insert-state)
+  (add-hook 'vterm-mode-hook 'evil-insert-state)
 )
 
 (after! company
