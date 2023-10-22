@@ -23,8 +23,8 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+(setq doom-font (font-spec :family "Iosevka SS04" :size 18 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "Iosevka SS04" :size 20))
 ;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
@@ -62,7 +62,15 @@
 (after! exec-path-from-shell
   (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
-t
+
+(defun find-or-create-vterm ()
+  "Finds or creates a vterm buffer"
+  (interactive)
+  (let ((vterm-buffer (car (seq-filter (lambda (buffer) (string= (buffer-name buffer) "*vterm*")) (buffer-list)))))
+   (if (null vterm-buffer) (call-interactively '+vterm/here) (set-window-buffer (selected-window) vterm-buffer))))
+
+
+(map! :leader (:prefix "t" :desc "Find..." "f" #'find-or-create-vterm))
 
 (defun move-buffer-to-window (windownum)
   "Moves buffer to window"
