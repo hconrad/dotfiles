@@ -45,6 +45,9 @@
   (set-popup-rule! "*doom:vterm-popup:*" :size 0.5 :vslot -4 :select t :quit nil :ttl 0 :side 'right)
   (evil-set-initial-state 'vterm-mode 'insert)
   (add-hook 'vterm-mode-hook 'evil-insert-state)
+  (setq evil-insert-state-cursor '(bar "#00FF00")
+      evil-visual-state-cursor '(box "#FF00FF")
+      evil-normal-state-cursor '(box "#E2E8EF"))
 )
 
 (after! company
@@ -66,11 +69,21 @@
 (defun find-or-create-vterm ()
   "Finds or creates a vterm buffer"
   (interactive)
-  (let ((vterm-buffer (car (seq-filter (lambda (buffer) (string= (buffer-name buffer) "*vterm*")) (buffer-list)))))
+  (let ((vterm-buffer  (get-buffer "*vterm*")))
    (if (null vterm-buffer) (call-interactively '+vterm/here) (set-window-buffer (selected-window) vterm-buffer))))
 
+(defun find-or-create-ldb ()
+  "Finds or creates a Local DB Conection"
+  (interactive)
+  (let ((ldb-buffer (get-buffer "*ldb*")))
+    (if (null ldb-buffer) (progn (vterm "*ldb*")
+                                 (with-current-buffer "*ldb*"
+                                                   (vterm-send-string "ldb")
+                                                   (vterm-send-return)))
+      (switch-to-buffer "*ldb*"))))
 
 (map! :leader (:prefix "t" :desc "Find..." "f" #'find-or-create-vterm))
+(map! :leader (:prefix "t" :desc "Find DB Term..." "d" #'find-or-create-ldb))
 (map! :leader (:prefix "b" :desc "Kill Buffer by Name" "X" #'doom/kill-matching-buffers))
 (defun move-buffer-to-window (windownum)
   "Moves buffer to window"
@@ -129,9 +142,19 @@
       :desc "Win 3" "3" #'winum-select-window-3
       :desc "Win 4" "4" #'winum-select-window-4)
 
+(after! evil
+  (map! :leader :desc "Search Project" "/" #'+vertico/project-search))
+
+(after! vertico-posframe
+ (vertico-multiform-mode 1)
+ (setq vertico-posframe-parameters
+      '((left-fringe . 8)
+        (right-fringe . 8))))
+
 
 
 (map! :leader (:prefix "s" :desc "find references" "r" #'lsp-find-references))
+(map! :leader (:prefix "c" :desc "lsp ui menu" "m" #'lsp-ui-imenu))
 
 (after! org
   (setq org-roam-directory "~/org")
@@ -280,6 +303,7 @@ the focus."
                                             :desc "eval list" "(" #'cider-eval-list-at-point
                                             :desc "eval defun to comment" ";" #'cider-eval-defun-to-comment))
 (map! :map clojure-mode-map :localleader (:prefix "g"
+                                            :desc "go to other window" "G" #'cider-find-dwim-other-window
                                             :desc "find references" "r" #'lsp-find-references))
    (map! :map clojure-mode-map :localleader (:prefix "r"
                                              :desc "send func to repl" "f" #'cider-send-function-to-repl
