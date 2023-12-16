@@ -146,7 +146,7 @@
   (map! :leader :desc "Search Project" "/" #'+vertico/project-search))
 
 (after! vertico-posframe
- (vertico-multiform-mode 1)
+ (vertico-posframe-mode 1)
  (setq vertico-posframe-parameters
       '((left-fringe . 8)
         (right-fringe . 8))))
