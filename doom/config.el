@@ -90,20 +90,20 @@
   (if (> windownum (length (window-list-1 nil nil t)))
       (message "No window numbered %s" windownum)
     (let ((b (current-buffer))
-	  (w1 (selected-window))
-	  (w2 (winum-get-window-by-number windownum)))
+          (w1 (selected-window))
+          (w2 (winum-get-window-by-number windownum)))
       (unless (eq w1 w2)
-	(set-window-buffer w2 b)
-	(switch-to-prev-buffer)
-	(unrecord-window-buffer w1 b)
-	(select-window (winum-get-window-by-number windownum))))))
+        (set-window-buffer w2 b)
+        (switch-to-prev-buffer)
+        (unrecord-window-buffer w1 b)
+        (select-window (winum-get-window-by-number windownum))))))
 
 (dotimes (i 4)
   (let ((n (+ i 1)))
     (eval `(defun ,(intern (format "buffer-to-window-%s" n)) (&optional arg)
              ,(format "Move buffer to the window with number %i." n)
              (interactive "P")
-	     (move-buffer-to-window ,n)
+     (move-buffer-to-window ,n)
              ))))
 
 (map! :leader (:prefix "b"
@@ -122,6 +122,8 @@
   (interactive)
   (sp-wrap-round)
   (evil-insert 1))
+
+
 
 (after! smartparens
   (smartparens-global-mode)
@@ -145,13 +147,11 @@
 (after! evil
   (map! :leader :desc "Search Project" "/" #'+vertico/project-search))
 
-(after! vertico-posframe
- (vertico-posframe-mode 1)
- (setq vertico-posframe-parameters
+(vertico-posframe-mode 1)
+(setq vertico-posframe-parameters
       '((left-fringe . 8)
-        (right-fringe . 8))))
-
-
+        (right-fringe . 8)))
+(setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
 
 (map! :leader (:prefix "s" :desc "find references" "r" #'lsp-find-references))
 (map! :leader (:prefix "c" :desc "lsp ui menu" "m" #'lsp-ui-imenu))
@@ -319,6 +319,8 @@ the focus."
 
 (load "~/repos/zprint.el/zprint.el" )
 (add-hook 'clojure-mode-hook 'zprint-mode)
+
+(add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
