@@ -66,11 +66,21 @@
   (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
 
+(defun get-vterm-project-name ()
+  (concat "*vterm-" (projectile-project-name) "*"))
+
+(defun create-project-vterm ()
+  (setq vterm-buffer-name (get-vterm-project-name))
+  (let ((vbuf (+vterm/here nil)) ) (setq vterm-buffer-name "*vterm*") vbuf))
+
+(create-project-vterm)
+
 (defun find-or-create-vterm ()
   "Finds or creates a vterm buffer"
   (interactive)
-  (let ((vterm-buffer  (get-buffer "*vterm*")))
-   (if (null vterm-buffer) (call-interactively '+vterm/here) (set-window-buffer (selected-window) vterm-buffer))))
+  (let ((vterm-name (concat "vterm-" (projectile-project-name)))
+        (vterm-buffer  (get-buffer vterm-name)))
+   (if (null vterm-buffer) (create-project-vterm) (set-window-buffer (selected-window) vterm-buffer))))
 
 (defun find-or-create-ldb ()
   "Finds or creates a Local DB Conection"
