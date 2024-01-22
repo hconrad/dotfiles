@@ -1,13 +1,5 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:~/bin:/usr/local/go/bin:$PATH
-export GOROOT=/usr/local/go
-
-export NVM_DIR=$HOME/.nvm
-if [ -s "$NVM_DIR"/nvm.sh ]; then 
-	\. "$NVM_DIR"/nvm.sh  # This loads nvm
-else
-	echo "NVM not loaded"
-fi
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
@@ -89,7 +81,9 @@ bindkey -v
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
+chpwd() ls -ltr
 # Example aliases
+alias em="emacsclient -nw"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

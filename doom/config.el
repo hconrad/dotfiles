@@ -73,13 +73,10 @@
   (setq vterm-buffer-name (get-vterm-project-name))
   (let ((vbuf (+vterm/here nil)) ) (setq vterm-buffer-name "*vterm*") vbuf))
 
-(create-project-vterm)
-
 (defun find-or-create-vterm ()
   "Finds or creates a vterm buffer"
   (interactive)
-  (let ((vterm-name (concat "vterm-" (projectile-project-name)))
-        (vterm-buffer  (get-buffer vterm-name)))
+  (let ((vterm-buffer  (get-buffer (concat "vterm-" (projectile-project-name)))))
    (if (null vterm-buffer) (create-project-vterm) (set-window-buffer (selected-window) vterm-buffer))))
 
 (defun find-or-create-ldb ()
@@ -326,9 +323,6 @@ the focus."
   (format "%s\n:) " namespace))
 (setq cider-repl-prompt-function 'cider-repl-new-line-prompt)
 (setq clojure-toplevel-inside-comment-form t)
-
-(load "~/repos/zprint.el/zprint.el" )
-(add-hook 'clojure-mode-hook 'zprint-mode)
 
 (add-to-list 'auto-mode-alist '("\\.astro\\'" . web-mode))
 
