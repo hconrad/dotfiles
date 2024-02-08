@@ -46,9 +46,9 @@
   (evil-set-initial-state 'vterm-mode 'insert)
   (add-hook 'vterm-mode-hook 'evil-insert-state)
   (setq evil-insert-state-cursor '(bar "#00FF00")
-      evil-visual-state-cursor '(box "#FF00FF")
-      evil-normal-state-cursor '(box "#E2E8EF"))
-)
+        evil-visual-state-cursor '(box "#FF00FF")
+        evil-normal-state-cursor '(box "#E2E8EF"))
+  )
 
 (after! company
   (setq company-idle-delay 1.0))
@@ -76,8 +76,8 @@
 (defun find-or-create-vterm ()
   "Finds or creates a vterm buffer"
   (interactive)
-  (let ((vterm-buffer  (get-buffer (concat "vterm-" (projectile-project-name)))))
-   (if (null vterm-buffer) (create-project-vterm) (set-window-buffer (selected-window) vterm-buffer))))
+  (let ((vterm-buffer  (get-buffer (get-vterm-project-name))))
+    (if (null vterm-buffer) (create-project-vterm) (set-window-buffer (selected-window) vterm-buffer))))
 
 (defun find-or-create-ldb ()
   "Finds or creates a Local DB Conection"
@@ -179,8 +179,22 @@
 (after! web-mode
   (map! :map web-mode-map "C-k" #'cider-repl-previous-input "C-j" #'cider-repl-next-input)
   (map! :map web-mode-map :localleader (:prefix "g"
-                                            :desc "go to definition" "g" #'lsp-find-definition
-                                            :desc "find references" "r" #'lsp-find-references)))
+                                        :desc "go to definition" "g" #'lsp-find-definition
+                                        :desc "find references" "r" #'lsp-find-references)))
+
+(after! js2-mode
+(map! :map js2-mode-map :localleader (:prefix "c"
+                                         :desc "Create NodeJS REPL" "c" #'nodejs-repl
+                                         :desc "Send Region" "r" #'nodejs-repl-send-region
+                                         :desc "Send buffer" "f" #'nodejs-repl-send-buffer
+                                         :desc "Send Line" "l" #'nodejs-repl-send-line
+                                         :desc "Go to REPL" "b" #'nodejs-repl-switch-to-repl))
+  (map! :map js2-mode-map :localleader (:prefix "f"
+                                         :desc "format Region" "r" #'lsp-format-region
+                                         :desc "format Buffer" "b" #'lsp-format-buffer))
+  (map! :map js2-mode-map :localleader (:prefix "g"
+                                         :desc "go to definition" "g" #'lsp-find-definition
+                                         :desc "find references" "r" #'lsp-find-references)))
 
 ;; SQL Config
 (add-hook 'sql-mode-hook
