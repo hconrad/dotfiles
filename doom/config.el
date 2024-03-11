@@ -332,6 +332,9 @@ the focus."
 (setq lsp-enable-file-watchers nil)
 (setq cider-save-file-on-load t)
 
+
+(add-hook! (js-mode js2-mode) #'eslint-fix-auto-mode)
+
 (defun cider-repl-new-line-prompt (namespace)
   "Return a prompt string that mentions NAMESPACE."
   (format "%s\n:) " namespace))
