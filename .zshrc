@@ -62,7 +62,7 @@ bindkey -v
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
-
+export EDITOR='emacsclient'
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
@@ -83,7 +83,7 @@ bindkey -v
 #
 chpwd() ls -ltr
 # Example aliases
-alias em="emacsclient -nw"
+alias e="emacsclient"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

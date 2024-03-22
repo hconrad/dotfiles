@@ -11,6 +11,9 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (setq doom-localleader-key ",")
 
+;; No menu bar
+(menu-bar-mode -1)
+
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
 ;; - `doom-font' -- the primary font to use
@@ -41,6 +44,15 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
+
+;;Mermaid
+;;
+(setq ob-mermaid-cli-path "/Users/hans/Library/Caches/fnm_multishells/90005_1706160492353/bin/mmdc")
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((mermaid . t)
+   (scheme . t)))
+
 (after! vterm
   (set-popup-rule! "*doom:vterm-popup:*" :size 0.5 :vslot -4 :select t :quit nil :ttl 0 :side 'right)
   (evil-set-initial-state 'vterm-mode 'insert)
@@ -64,7 +76,7 @@
 (set-face-attribute 'flycheck-posframe-border-width 5)
 (after! exec-path-from-shell
   (when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize)))
+    (exec-path-from-shell-initialize)))
 
 (defun get-vterm-project-name ()
   (concat "*vterm-" (projectile-project-name) "*"))
@@ -85,8 +97,8 @@
   (let ((ldb-buffer (get-buffer "*ldb*")))
     (if (null ldb-buffer) (progn (vterm "*ldb*")
                                  (with-current-buffer "*ldb*"
-                                                   (vterm-send-string "ldb")
-                                                   (vterm-send-return)))
+                                   (vterm-send-string "ldb")
+                                   (vterm-send-return)))
       (switch-to-buffer "*ldb*"))))
 
 (map! :leader (:prefix "t" :desc "Find..." "f" #'find-or-create-vterm))
@@ -112,7 +124,7 @@
     (eval `(defun ,(intern (format "buffer-to-window-%s" n)) (&optional arg)
              ,(format "Move buffer to the window with number %i." n)
              (interactive "P")
-     (move-buffer-to-window ,n)
+             (move-buffer-to-window ,n)
              ))))
 
 (map! :leader (:prefix "b"
@@ -165,17 +177,24 @@
 (map! :leader (:prefix "s" :desc "find references" "r" #'lsp-find-references))
 (map! :leader (:prefix "c" :desc "lsp ui menu" "m" #'lsp-ui-imenu))
 
+(setq org-log-done nil)
 (after! org
   (setq org-roam-directory "~/org")
   (setq org-roam-dailies-directory ".")
   (setq org-agenda-files (list "~/org")))
 
 (map! :leader (:prefix ("r" . "org-roam")
-                 :desc "toggle buffer" "h" #'org-roam-buffer-toggle
-                 :desc "find" "f" #'org-roam-node-find
-                 :desc "capture" "c" #'org-roam-capture
-                 :desc "capture today" "t" #'org-roam-dailies-goto-today
-                 :desc "capture manana" "m" #'org-roam-dailies-goto-tomorrow))
+               :desc "toggle buffer" "h" #'org-roam-buffer-toggle
+               :desc "find" "f" #'org-roam-node-find
+               :desc "capture" "c" #'org-roam-capture
+               :desc "yesterday" "y" #'org-roam-dailies-goto-yesterday
+               :desc "capture today" "t" #'org-roam-dailies-goto-today
+               :desc "capture manana" "m" #'org-roam-dailies-goto-tomorrow))
+;; AVY Config
+(setq avy-all-windows t)
+(map! :n "g s r" #'avy-copy-region)
+(map! :n "g s l" #'avy-copy-line)
+(map! :n "g s m" #'avy-move-region)
 
 ;; JS
 (after! web-mode
@@ -185,18 +204,18 @@
                                         :desc "find references" "r" #'lsp-find-references)))
 
 (after! js2-mode
-(map! :map js2-mode-map :localleader (:prefix "c"
-                                         :desc "Create NodeJS REPL" "c" #'nodejs-repl
-                                         :desc "Send Region" "r" #'nodejs-repl-send-region
-                                         :desc "Send buffer" "f" #'nodejs-repl-send-buffer
-                                         :desc "Send Line" "l" #'nodejs-repl-send-line
-                                         :desc "Go to REPL" "b" #'nodejs-repl-switch-to-repl))
+  (map! :map js2-mode-map :localleader (:prefix "c"
+                                        :desc "Create NodeJS REPL" "c" #'nodejs-repl
+                                        :desc "Send Region" "r" #'nodejs-repl-send-region
+                                        :desc "Send buffer" "f" #'nodejs-repl-send-buffer
+                                        :desc "Send Line" "l" #'nodejs-repl-send-line
+                                        :desc "Go to REPL" "b" #'nodejs-repl-switch-to-repl))
   (map! :map js2-mode-map :localleader (:prefix "f"
-                                         :desc "format Region" "r" #'lsp-format-region
-                                         :desc "format Buffer" "b" #'lsp-format-buffer))
+                                        :desc "format Region" "r" #'lsp-format-region
+                                        :desc "format Buffer" "b" #'lsp-format-buffer))
   (map! :map js2-mode-map :localleader (:prefix "g"
-                                         :desc "go to definition" "g" #'lsp-find-definition
-                                         :desc "find references" "r" #'lsp-find-references)))
+                                        :desc "go to definition" "g" #'lsp-find-definition
+                                        :desc "find references" "r" #'lsp-find-references)))
 
 ;; SQL Config
 (add-hook 'sql-mode-hook
@@ -283,33 +302,33 @@ the focus."
    (buffer-substring-no-properties start end)))
 
 (after! clojure-mode
-        (progn (clojure/fancify-symbols 'clojure-mode)
-               (require 'flycheck-clj-kondo)))
+  (progn (clojure/fancify-symbols 'clojure-mode)
+         (require 'flycheck-clj-kondo)))
 
 (after! cider
   (progn
     (set-popup-rule! "*cider-repl*" :ignore t)
     (setq cider-repl-display-in-current-window nil)
     (clojure/fancify-symbols 'cider-repl-mode)
-               (clojure/fancify-symbols 'cider-clojure-interaction-mode)
-  ;; Quit Cider when disconnected
-  (add-hook 'cider-disconnected-hook #'cider-quit-when-disconnected)
-  ;; include cider buffer into current workspace
-  (add-hook 'cider-repl-mode-hook
-            (lambda ()
-              (persp-add-buffer (current-buffer))))
+    (clojure/fancify-symbols 'cider-clojure-interaction-mode)
+    ;; Quit Cider when disconnected
+    (add-hook 'cider-disconnected-hook #'cider-quit-when-disconnected)
+    ;; include cider buffer into current workspace
+    (add-hook 'cider-repl-mode-hook
+              (lambda ()
+                (persp-add-buffer (current-buffer))))
 
-  ;; include test-report buffer into current workspace
-  (add-hook 'cider-test-report-mode-hook
-            (lambda ()
-              (persp-add-buffer (current-buffer))))
+    ;; include test-report buffer into current workspace
+    (add-hook 'cider-test-report-mode-hook
+              (lambda ()
+                (persp-add-buffer (current-buffer))))
 
-  ;; include temp buffers created by cider into current workspace
-  (add-hook 'cider-popup-buffer-mode-hook
-            (lambda ()
-              (persp-add-buffer (current-buffer))))
+    ;; include temp buffers created by cider into current workspace
+    (add-hook 'cider-popup-buffer-mode-hook
+              (lambda ()
+                (persp-add-buffer (current-buffer))))
 
-               ))
+    ))
 
 
 
@@ -325,12 +344,12 @@ the focus."
                                             :desc "eval func" "f" #'cider-eval-defun-at-point
                                             :desc "eval list" "(" #'cider-eval-list-at-point
                                             :desc "eval defun to comment" ";" #'cider-eval-defun-to-comment))
-(map! :map clojure-mode-map :localleader (:prefix "g"
+  (map! :map clojure-mode-map :localleader (:prefix "g"
                                             :desc "go to other window" "G" #'cider-find-dwim-other-window
                                             :desc "find references" "r" #'lsp-find-references))
-   (map! :map clojure-mode-map :localleader (:prefix "r"
-                                             :desc "send func to repl" "f" #'cider-send-function-to-repl
-                                             :desc "send region to repl" "r" #'cider-send-region-to-repl)))
+  (map! :map clojure-mode-map :localleader (:prefix "r"
+                                            :desc "send func to repl" "f" #'cider-send-function-to-repl
+                                            :desc "send region to repl" "r" #'cider-send-region-to-repl)))
 (setq lsp-enable-file-watchers nil)
 (setq cider-save-file-on-load t)
 
