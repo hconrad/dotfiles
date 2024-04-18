@@ -92,6 +92,8 @@
 (map! :leader (:prefix "t" :desc "Find..." "f" #'find-or-create-vterm))
 (map! :leader (:prefix "t" :desc "Find DB Term..." "d" #'find-or-create-ldb))
 (map! :leader (:prefix "b" :desc "Kill Buffer by Name" "X" #'doom/kill-matching-buffers))
+(map! :leader (:prefix "w" :desc "Maximize" "m" #'doom/window-maximize-buffer))
+
 (defun move-buffer-to-window (windownum)
   "Moves buffer to window"
   (if (> windownum (length (window-list-1 nil nil t)))
