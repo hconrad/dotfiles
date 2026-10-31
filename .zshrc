@@ -3,12 +3,13 @@ export PATH=$HOME/bin:/usr/local/bin:~/bin:/usr/local/go/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
-
+export EDITOR="emacsclient"
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="avit"
 
+export LESS="-SRXF"
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -81,7 +82,7 @@ export EDITOR='emacsclient'
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
-chpwd() ls -ltr
+#chpwd() ls -ltr
 # Example aliases
 alias e="emacsclient"
 # alias zshconfig="mate ~/.zshrc"
@@ -89,6 +90,13 @@ alias e="emacsclient"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/hans/Applications/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/hans/Applications/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/hans/Applications/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/hans/Applications/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH="$HOME/.local/bin:$PATH"
 
 # Machine-local settings and secrets (not tracked in git)
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
